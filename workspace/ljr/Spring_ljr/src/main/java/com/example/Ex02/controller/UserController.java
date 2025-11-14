@@ -72,6 +72,7 @@ public class UserController {
             HttpSession session,
             Model model) {
 
+
         if (bindingResult.hasErrors()) {
             return "user/userLogin";
         }
@@ -88,15 +89,13 @@ public class UserController {
         return "redirect:/survey";
     }
 
-    // =========================================================
-    // 설문
-    // =========================================================
-
+    // 회원가입 후 설문지페이지
     @GetMapping("/survey")
     public String surveyPage(@ModelAttribute("surveyDto") SurveyDto surveyDto) {
         return "survey/surveyForm";
     }
 
+    // 설문지 입력 후 처리
     @PostMapping("/survey/submit")
     public String submitSurvey(
             @Valid @ModelAttribute("surveyDto") SurveyDto surveyDto,
@@ -115,7 +114,20 @@ public class UserController {
 
     // 마이페이지
     @GetMapping("/my-page")
-    public String showMyPage(){
+    public String showMyPage(HttpSession session, Model model){
+
+        // 세션에서 로그인 사용자 ID 얻기
+        Long userId = (Long) session.getAttribute("userId");
+
+        // 로그인 상태 아니면 로그인 페이지로
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        // DB에서 사용자 정보 조회
+        UserDto user = userMapper.findById(userId);
+        model.addAttribute("user", user);
+
         return "user/myPage";
     }
 

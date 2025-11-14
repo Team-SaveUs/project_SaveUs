@@ -53,4 +53,11 @@
 
     </select>
 
+    <!-- 마이페이지 : 사용자 상세 정보 띄우기  -->
+    <select id="findById" parameterType="long" resultType="com.example.Ex02.dto.UserDto">
+        SELECT *
+        FROM USERS
+        WHERE USER_ID = #{userId}
+    </select>
+
 </mapper>

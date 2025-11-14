@@ -9,4 +9,6 @@ public interface UserMapper {
     void insertUser(UserDto user);
     int countByEmail(String email);
     UserDto findByEmail(String email);
+
+    UserDto findById(Long userId);
 }
