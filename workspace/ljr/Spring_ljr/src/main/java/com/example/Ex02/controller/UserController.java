@@ -1,8 +1,11 @@
 package com.example.Ex02.controller;
 
+import com.example.Ex02.dto.SurveyDto;
 import com.example.Ex02.dto.UserJoinDto;
 import com.example.Ex02.dto.UserLoginDto;
+import com.example.Ex02.mapper.SurveyMapper;
 import com.example.Ex02.mapper.UserMapper;
+import com.example.Ex02.service.SurveyService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,12 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private SurveyMapper surveyMapper;
+
+    @Autowired
+    private SurveyService surveyService;
 
     // 회원가입 페이지 이동
     @GetMapping("/join")
@@ -45,7 +54,7 @@ public class UserController {
         session.setAttribute("userId", userJoinDto.getUserId());
         session.setAttribute("loginUser", userJoinDto);
 
-        return "redirect:/login";  // 필요하면 survey로 변경
+        return "redirect:/survey"; // 필요하면 survey로 변경
     }
 
     // 이메일 중복확인
@@ -54,6 +63,45 @@ public class UserController {
     public String checkEmail(@RequestParam("email") String email) {
         int cnt = userMapper.countByEmail(email);
         return cnt > 0 ? "duplicate" : "ok";
+    }
+
+    // 설문 페이지
+    @GetMapping("/survey")
+    public String surveyPage(@ModelAttribute("surveyDto")SurveyDto surveyDto, HttpSession session, Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+
+        // 회원가입/로그인 안 했으면 접근 불가
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        return "survey/surveyForm";   // templates/survey/surveyForm.html
+    }
+
+    @PostMapping("/survey/submit")
+    public String submitSurvey(@Valid @ModelAttribute("surveyDto") SurveyDto surveyDto,
+                               BindingResult bindingResult,
+                               HttpSession session,
+                               Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+
+        // 비정상 접근 방지
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        // 문항 체크 안 했을 때
+        if (bindingResult.hasErrors()) {
+            return "survey/surveyForm";
+        }
+
+        // 설문지 점수계산
+        surveyService.evaluateSurvey(surveyDto);
+        // 결과 페이지로 전달
+        model.addAttribute("result", surveyDto);
+
+        return "survey/surveyResult";
     }
 
     // 로그인 페이지
@@ -70,7 +118,7 @@ public class UserController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        // 로그인 DTO의 이메일로 조회해야 함
+        // 로그인 DTO의 이메일로 조회
         UserJoinDto user = userMapper.findByEmail(userLoginDto.getEmail());
         System.out.println("조회된 유저: " + user);
 
@@ -86,7 +134,7 @@ public class UserController {
             return "redirect:/login";
         }
 
-        // 로그인 성공 → 세션 저장
+        // 로그인 성공 > 세션 저장
         session.setAttribute("userId", user.getUserId());
         session.setAttribute("loginUser", user);
 

@@ -17,7 +17,13 @@
     </resultMap>
     <!-- 회원가입 -->
     <insert id="insertUser" parameterType="com.example.Ex02.dto.UserJoinDto">
+
+        <selectKey keyProperty="userId" resultType="long" order="BEFORE">
+            SELECT USERS_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+
         INSERT INTO USERS (
+        USER_ID,
         EMAIL,
         PASSWORD,
         NICKNAME,
@@ -25,18 +31,18 @@
         CURRENT_WEIGHT,
         MAIN_GOAL,
         PROFILE_IMAGE_URL
-        )
-        VALUES (
+        ) VALUES (
+        #{userId},
         #{email},
         #{password},
         #{nickname},
         #{height},
         #{currentWeight},
         #{mainGoal},
-        #{profileImageUrl, jdbcType=VARCHAR}
+        #{profileImageUrl}
         )
-    </insert>
 
+    </insert>
 
     <!-- 이메일로 조회 -->
     <select id="findByEmail" resultMap="userMap">

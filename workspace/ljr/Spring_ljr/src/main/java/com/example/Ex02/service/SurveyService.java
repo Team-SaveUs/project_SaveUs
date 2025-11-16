@@ -11,33 +11,16 @@ public class SurveyService {
     @Autowired
     private SurveyMapper surveyMapper;
 
-    public void processSurvey(SurveyDto dto, Long userId) {
+        public void evaluateSurvey(SurveyDto dto) {
 
-        String fatType = calcFat(dto);
-        String proteinType = calcProtein(dto);
-        String carbType = calcCarb(dto);
+            int proteinScore = dto.getProtein1() + dto.getProtein2() + dto.getProtein3();
+            int fatScore = dto.getFat1() + dto.getFat2() + dto.getFat3();
+            int carbScore = dto.getCarb1() + dto.getCarb2() + dto.getCarb3();
 
-        surveyMapper.insertSurveyResult(userId, fatType, proteinType, carbType);
-    }
+            int threshold = 9;
 
-    public String calcFat(SurveyDto dto) {
-        int score = dto.getQ1() + dto.getQ2();
-        return type(score);
-    }
-
-    public String calcProtein(SurveyDto dto) {
-        int score = dto.getQ3() + dto.getQ4();
-        return type(score);
-    }
-
-    public String calcCarb(SurveyDto dto) {
-        int score = dto.getQ5() + dto.getQ6() + dto.getQ7();
-        return type(score);
-    }
-
-    private String type(int score) {
-        if (score <= 3) return "LOW";
-        else if (score <= 5) return "MID";
-        else return "HIGH";
-    }
+            dto.setProteinType(proteinScore >= threshold ? "고단백" : "저단백");
+            dto.setFatType(fatScore >= threshold ? "고지방" : "저지방");
+            dto.setCarbType(carbScore >= threshold ? "고탄수" : "저탄수");
+        }
 }
