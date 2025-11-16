@@ -4,103 +4,20 @@
   layout:decorate="~{layout}">
 
 <head>
-    <meta charset="UTF-8">
-<<<<<<< HEAD
-    <title>SaveUs - My Page</title>
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-=======
-    <title>My Page</title>
->>>>>>> home2
-    <link rel="stylesheet" th:href="@{/css/myPage.css}">
+<meta charset="UTF-8">
+<title>My Page</title>
+<link rel="stylesheet" th:href="@{/css/myPage.css}">
 </head>
 
 <main layout:fragment="content">
 
-<<<<<<< HEAD
-    <h2 class="section-title">My Page & Settings</h2>
-
-    <!-- 프로필 영역 -->
-    <section class="profile-section">
-        <div class="profile-card">
-            <div class="profile-banner"></div>
-
-            <div class="profile-inner">
-                <img class="profile-img"
-                     th:src="${user.profileImageUrl != null ? user.profileImageUrl : '/images/user-default.png'}"
-                     alt="User">
-
-                <div class="profile-info">
-                    <!-- 닉네임 -->
-                    <h3 class="profile-name" th:text="${user.nickname}">사용자 닉네임</h3>
-
-                    <!-- 사용자 타입(예: 식습관 유형) -->
-                    <span class="profile-type" th:text="${user.mainGoal != null ? user.mainGoal : 'Balanced Explorer'}">
-                        Balanced Explorer
-                    </span>
-
-                    <!-- 이메일 -->
-                    <p class="profile-email" th:text="${user.email}">email@example.com</p>
-
-                    <!-- 가입일 -->
-                    <p class="profile-date">
-                        Member since:
-                        <span th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd')}">2025</span>
-                    </p>
-                </div>
-
-                <button class="profile-edit-btn"
-                        onclick="location.href='/my-page/edit'">프로필 수정</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 업적 -->
-    <section class="badge-section">
-        <h3 class="content-title">My Achievements</h3>
-        <div class="badge-container">
-            <div class="badge-card">Veggie Vanguard</div>
-            <div class="badge-card">Macro Master</div>
-            <div class="badge-card">Sugar Slayer</div>
-            <div class="badge-card">Diet Virtuoso</div>
-        </div>
-    </section>
-
-    <!-- 진행중인 챌린지 -->
-    <section class="challenge-section">
-        <h3 class="content-title">Active Challenges</h3>
-        <div class="challenge-container">
-            <div class="challenge-card">
-                <h4>30-Day Sugar Detox</h4>
-                <p>7일 남음</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:75%"></div>
-                </div>
-            </div>
-
-            <div class="challenge-card">
-                <h4>Veggie Vanguard</h4>
-                <p>18일 남음</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:40%"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 계정 설정 -->
-    <section class="account-section">
-        <h3 class="content-title">Account Actions</h3>
-        <div class="account-btns">
-            <button class="logout-btn" onclick="location.href='/logout'">로그아웃</button>
-            <button class="delete-btn">회원탈퇴</button>
-=======
-    <!-- ⚠ user 자체가 null이면 자동으로 로그인페이지로 이동 -->
-    <th:block th:if="${user == null}">
-        <script>
-            alert("로그인이 필요합니다.");
-            location.href = "/login";
-        </script>
-    </th:block>
+<!-- user null → 로그인 이동 -->
+<th:block th:if="${user == null}">
+    <script>
+        alert("로그인이 필요합니다.");
+        location.href = "/login";
+    </script>
+</th:block>
 
 
 <!-- 페이지 제목 -->
@@ -125,9 +42,44 @@
             <div class="profile-info">
                 <h3 class="profile-name" th:text="${user.nickname}">닉네임</h3>
 
-            <!-- 이메일 -->
-            <p th:text="${user != null ? user.email : ''}">email</p>
->>>>>>> home2
+                <!-- Goal 태그 (1번 위치) -->
+                <span class="persona-tag">
+                    <span>목표 : </span>
+                    <span th:switch="${user.mainGoal}">
+                        <span th:case="0">감량</span>
+                        <span th:case="1">증량</span>
+                        <span th:case="2">건강식</span>
+                        <span th:case="*">목표 없음</span>
+                    </span>
+                </span>
+
+                <!-- 성별 -->
+                <p>
+                    성별 :
+                    <span th:text="${user.gender == 'M' ? '남성' : '여성'}"></span>
+                </p>
+
+                <!-- 이메일 -->
+                <p>이메일 : <span th:text="${user.email}"></span></p>
+
+                <!-- 식단 유형 (survey 결과) -->
+                <p>
+                    식단 유형:
+                    <span class="persona-tag" style="background:#66c4ff;">
+                    <span th:text="${dietType != null ? dietType : '미분석'}"></span>
+                </span>
+                </p>
+
+                <!-- 가입일 -->
+                <p>
+                    가입일:
+                <span th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd')}"></span>
+                </p>
+            </div>
+
+
+            <!-- 편집 버튼  -->
+            <button class="btn-edit" onclick="location.href='/profile/edit'">프로필 수정</button>
         </div>
     </div>
 </section>

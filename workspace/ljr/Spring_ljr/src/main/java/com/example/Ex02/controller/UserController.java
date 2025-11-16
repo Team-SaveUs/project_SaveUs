@@ -1,16 +1,6 @@
 package com.example.Ex02.controller;
 
 import com.example.Ex02.dto.SurveyDto;
-<<<<<<< HEAD
-import com.example.Ex02.dto.UserDto;
-import com.example.Ex02.dto.UserLoginDto;
-import com.example.Ex02.mapper.UserMapper;
-import com.example.Ex02.Service.SurveyService;
-
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-
-=======
 import com.example.Ex02.dto.UserJoinDto;
 import com.example.Ex02.dto.UserLoginDto;
 import com.example.Ex02.mapper.SurveyMapper;
@@ -18,16 +8,12 @@ import com.example.Ex02.mapper.UserMapper;
 import com.example.Ex02.service.SurveyService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
->>>>>>> home2
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-<<<<<<< HEAD
-=======
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
->>>>>>> home2
 
 @Controller
 public class UserController {
@@ -36,19 +22,6 @@ public class UserController {
     private UserMapper userMapper;
 
     @Autowired
-<<<<<<< HEAD
-    private SurveyService surveyService;
-
-    // -------------------- 회원가입 --------------------
-    @GetMapping("/join")
-    public String showJoinPage(@ModelAttribute("userDto") UserDto userDto) {
-        return "user/userInsert";
-    }
-
-    @PostMapping("/user/insert")
-    public String insertUser(
-            @Valid @ModelAttribute("userDto") UserDto userDto,
-=======
     private SurveyMapper surveyMapper;
 
     @Autowired
@@ -64,7 +37,6 @@ public class UserController {
     @PostMapping("/user/insert")
     public String insertUser(
             @Valid @ModelAttribute("userDto") UserJoinDto userJoinDto,
->>>>>>> home2
             BindingResult bindingResult,
             HttpSession session) {
 
@@ -72,88 +44,6 @@ public class UserController {
             return "user/userInsert";
         }
 
-<<<<<<< HEAD
-        userMapper.insertUser(userDto);
-        session.setAttribute("userId", userDto.getUserId());
-
-        return "redirect:/survey";
-    }
-
-    // =========================================================
-    // 이메일 중복 확인 (중요 — JS와 연결되는 엔드포인트)
-    // =========================================================
-
-    @GetMapping("/user/checkEmail")
-    @ResponseBody
-    public String checkEmail(@RequestParam("email") String email) {
-
-        int count = userMapper.countByEmail(email);
-
-        return (count > 0) ? "duplicate" : "ok";
-    }
-
-    // 로그인
-    @GetMapping("/login")
-    public String showLoginPage(@ModelAttribute("userLoginDto") UserLoginDto userLoginDto) {
-        return "user/userLogin";
-    }
-
-    @PostMapping("/login")
-    public String doLogin(
-            @Valid @ModelAttribute("userLoginDto") UserLoginDto userLoginDto,
-            BindingResult bindingResult,
-            HttpSession session,
-            Model model) {
-
-
-        if (bindingResult.hasErrors()) {
-            return "user/userLogin";
-        }
-
-        UserDto user = userMapper.findByEmail(userLoginDto.getEmail());
-
-        if (user == null || !user.getPassword().equals(userLoginDto.getPassword())) {
-            model.addAttribute("loginError", "이메일 또는 비밀번호가 올바르지 않습니다.");
-            return "user/userLogin";
-        }
-
-        session.setAttribute("userId", user.getUserId());
-
-        return "redirect:/survey";
-    }
-
-    // 회원가입 후 설문지페이지
-    @GetMapping("/survey")
-    public String surveyPage(@ModelAttribute("surveyDto") SurveyDto surveyDto) {
-        return "survey/surveyForm";
-    }
-
-    // 설문지 입력 후 처리
-    @PostMapping("/survey/submit")
-    public String submitSurvey(
-            @Valid @ModelAttribute("surveyDto") SurveyDto surveyDto,
-            BindingResult bindingResult,
-            HttpSession session) {
-
-        if (bindingResult.hasErrors()) {
-            return "survey/surveyForm";
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
-        surveyService.processSurvey(surveyDto, userId);
-
-        return "redirect:/challenge/recommend";
-    }
-
-    // 마이페이지
-    @GetMapping("/my-page")
-    public String showMyPage(HttpSession session, Model model){
-
-        // 세션에서 로그인 사용자 ID 얻기
-        Long userId = (Long) session.getAttribute("userId");
-
-        // 로그인 상태 아니면 로그인 페이지로
-=======
         // DB에 INSERT (userId는 MyBatis에서 keyProperty로 채워져야 함)
         userMapper.insertUser(userJoinDto);
 
@@ -198,15 +88,10 @@ public class UserController {
         Long userId = (Long) session.getAttribute("userId");
 
         // 비정상 접근 방지
->>>>>>> home2
         if (userId == null) {
             return "redirect:/login";
         }
 
-<<<<<<< HEAD
-        // DB에서 사용자 정보 조회
-        UserDto user = userMapper.findById(userId);
-=======
         // 문항 체크 안 했을 때
         if (bindingResult.hasErrors()) {
             return "survey/surveyForm";
@@ -276,7 +161,6 @@ public class UserController {
 
         // 사용자 정보 조회
         UserJoinDto user = userMapper.findById(userId);
->>>>>>> home2
         model.addAttribute("user", user);
 
         // 세션에 저장된 식단유형을 모델에 추가
@@ -285,15 +169,25 @@ public class UserController {
 
         return "user/myPage";
     }
-<<<<<<< HEAD
 
-    // 마이페이지 -> 프로필 수정 이동
-    @GetMapping("/my-page/edit")
-    public String editProfilePage() {
-        return "user/myPageEdit";
+    @GetMapping("/profile/edit")
+    public String editProfilePage(HttpSession session, Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        UserJoinDto user = userMapper.findById(userId);
+        model.addAttribute("user", user);
+
+        return "user/profileEdit";   // ← templates/user/profileEdit.html 로 이동
     }
 
-
-=======
->>>>>>> home2
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();   // 세션 전체 삭제
+        return "redirect:/login";
+    }
 }
