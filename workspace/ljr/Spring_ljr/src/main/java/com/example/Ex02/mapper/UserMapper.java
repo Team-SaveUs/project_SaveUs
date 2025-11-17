@@ -23,4 +23,7 @@ public interface UserMapper {
     int checkPassword(Long userId, String currentPassword);
 
     void updatePassword(Long userId, String newPassword);
+
+    UserJoinDto findMainInfo(Long userId);
+
 }

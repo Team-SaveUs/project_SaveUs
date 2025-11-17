@@ -115,4 +115,23 @@
         WHERE USER_ID = #{userId}
     </update>
 
+    <!-- 다른 사람 프로필 조회 -->
+    <select id="findMainInfo" resultMap="userMap">
+        SELECT
+        USER_ID,
+        EMAIL,
+        PASSWORD,
+        NICKNAME,
+        HEIGHT,
+        CURRENT_WEIGHT,
+        MAIN_GOAL,
+        PROFILE_IMAGE_URL,
+        TO_CHAR(BIRTHDATE, 'YYYY-MM-DD') AS BIRTHDATE,
+        AGE,
+        GENDER,
+        CREATED_AT
+        FROM USERS
+        WHERE USER_ID = #{userId}
+    </select>
+
 </mapper>

@@ -208,4 +208,41 @@ public class UserController {
         redirectAttributes.addFlashAttribute("pwSuccess", "비밀번호가 성공적으로 변경되었습니다.");
         return "redirect:/profile/edit";
     }
+
+
+    // 다른 사람의 프로필 조회
+    @GetMapping("/user/profile/{targetUserId}")
+    public String viewOtherProfile(
+            @PathVariable("targetUserId") Long targetUserId,
+            HttpSession session,
+            Model model) {
+
+        Long loginUserId = (Long) session.getAttribute("userId");
+
+        // 로그인 하지 않은 사용자는 로그인 페이지로 이동
+        if (loginUserId == null) {
+            return "redirect:/login";
+        }
+
+        // 대상 유저 정보 조회
+        UserJoinDto profile = userMapper.findMainInfo(targetUserId);
+
+        // 유저가 존재하지 않으면 404 페이지 이동
+        if (profile == null) {
+            return "error/404";
+        }
+
+        // 사용자 프로필 데이터 전달
+        model.addAttribute("profile", profile);
+
+        // 해당 프로필이 본인 것인지 여부
+        model.addAttribute("isOwner", loginUserId.equals(targetUserId));
+
+        // 식단 유형(설문 결과) 로드
+        String dietType = surveyMapper.findDietType(targetUserId);
+        model.addAttribute("dietType", dietType);
+
+        return "user/otherProfile";  
+    }
+
 }
