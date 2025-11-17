@@ -46,6 +46,7 @@ SaveUs는 **AI 기반 식단 분석**을 통해 사용자의 식습관을 진단
 ---
 
 ## 🗂️ 프로젝트 폴더 구조
+```
 src
 ├─ main
 │ ├─ java
@@ -62,7 +63,7 @@ src
 │ │ └─ application.properties
 │
 └─ uploads (프로필 이미지 저장)
-
+```
 
 ---
 
