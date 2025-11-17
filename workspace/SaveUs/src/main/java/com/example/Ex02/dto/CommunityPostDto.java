@@ -12,7 +12,7 @@ public class CommunityPostDto {
     private long postId;
     private long userId; //작성자
     private String content;
-//    private String imageUrl; //게시글 이미지
+    //    private String imageUrl; //게시글 이미지
     private List<String> imageUrls;
     private int healthScore;
     private Timestamp createdAt; // 원본 날짜
