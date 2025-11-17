@@ -13,4 +13,14 @@ public interface UserMapper {
     UserJoinDto findByEmail(String email);
 
     UserJoinDto findById(Long userId);
+
+    void deleteUser(Long userId);
+
+    int countByNickname(String nickname);
+
+    void updateUser(UserJoinDto userDto);
+
+    int checkPassword(Long userId, String currentPassword);
+
+    void updatePassword(Long userId, String newPassword);
 }
