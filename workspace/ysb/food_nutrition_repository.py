@@ -15,7 +15,7 @@ def get_food_nutrition_by_name(food_name: str) -> Optional[dict[str, object]]:
         query = f"""
         select * from food_nutrition
         where food_name = :food_name
-                       """
+        """
 
         cursor.execute(query, {"food_name": food_name})
 
