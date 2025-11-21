@@ -3,15 +3,13 @@ package com.example.Ex02.controller;
 import com.example.Ex02.dto.MealDto;
 import com.example.Ex02.dto.MealSaveDto;
 import com.example.Ex02.mapper.MealMapper;
+import com.example.Ex02.service.AiFoodService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +22,17 @@ public class MealController {
 
     @Autowired
     private MealMapper mealMapper;
+
+    @Autowired
+    private AiFoodService aiFoodService;
+
+    /* [추가 ] AI 사진 분석 요청 처리*/
+    @PostMapping("/meal/ai-upload")
+    @ResponseBody
+    public java.util.List<MealSaveDto> analyzeFoodImage(@RequestParam("file") MultipartFile file) {
+        // 서비스가 List를 리턴하므로 그대로 전달
+        return aiFoodService.analyzeImage(file);
+    }
 
     // 식사 데이터 저장
     @PostMapping("/meal/save")

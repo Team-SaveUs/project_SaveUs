@@ -12,7 +12,6 @@
 </head>
 
 <main layout:fragment="content">
-
     <!-- 상단 정보 카드 -->
     <div class="top-section">
         <div class="welcome-card">
@@ -47,7 +46,10 @@
         <p class="sub">AI 사진 분석 또는 입력을 통해 식사를 기록할 수 있습니다.</p>
 
         <div class="log-actions">
-            <button class="photo-upload-btn"><span>AI 사진 업로드</span></button>
+            <input type="file" id="aiFileInput" style="display: none;" accept="image/*">
+            <button class="photo-upload-btn">
+                <span>AI 사진 업로드</span>
+            </button>
 
             <button class="add-meal-btn" onclick="location.href='/direct-input'">직접 입력</button>
 
@@ -218,11 +220,10 @@
         </div>
 
     </div>
-
 </main>
 
 <th:block layout:fragment="script">
-    <script src="/js/foodAdd.js"></script>
+    <script src="/js/foodAdd.js?v=new_ai_ver1"></script>
 </th:block>
 
 </html>
