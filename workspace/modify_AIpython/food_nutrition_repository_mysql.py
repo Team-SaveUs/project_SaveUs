@@ -6,10 +6,11 @@ from typing import Optional
 def get_food_nutrition_by_name(food_name: str) -> Optional[dict]:
     try:
         conn = mysql.connector.connect(
-            host="localhost",
+            host="3.37.90.119",
             user="root",
             password="3306",
-            database="saveus"
+            database="saveus",
+            charset = "utf8"
         )
         cursor = conn.cursor()
 
