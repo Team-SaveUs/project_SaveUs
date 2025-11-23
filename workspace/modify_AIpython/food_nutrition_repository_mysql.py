@@ -1,25 +1,21 @@
 from typing import Optional
 import mysql.connector
-
 from typing import Optional
-import mysql.connector
+
 
 def get_food_nutrition_by_name(food_name: str) -> Optional[dict]:
-    conn = None
-    cursor = None
     try:
         conn = mysql.connector.connect(
             host="localhost",
             user="root",
             password="3306",
-            database="saveus",
-            charset="utf8"
+            database="saveus"
         )
         cursor = conn.cursor()
 
         query = """
-        SELECT * FROM food_nutrition
-        WHERE food_name = %s
+        SELECT * FROM FOOD_NUTRITION
+        WHERE FOOD_NAME = %s
         """
 
         cursor.execute(query, (food_name,))
@@ -28,14 +24,12 @@ def get_food_nutrition_by_name(food_name: str) -> Optional[dict]:
         if not row:
             return None
 
-        # 🔥 핵심 수정: 컬럼명을 소문자로 변환해줘야 Pydantic과 매칭됨!
-        columns = [desc[0].lower() for desc in cursor.description]
+        columns = [desc[0] for desc in cursor.description]  # 대문자 그대로 유지
         return dict(zip(columns, row))
 
     except Exception as e:
         print("MySQL ERROR:", e)
         return None
-
     finally:
         if cursor:
             cursor.close()
