@@ -9,9 +9,9 @@ public class ProfileConfig implements WebMvcConfigurer{
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String uploadPath = System.getProperty("user.dir") + "/uploads/";
 
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///" + uploadPath);
+                .addResourceLocations("file:/home/ubuntu/uploads/");
+
     }
 }
