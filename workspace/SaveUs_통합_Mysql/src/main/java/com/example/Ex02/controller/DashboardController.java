@@ -1,5 +1,4 @@
 package com.example.Ex02.controller;
-
 import com.example.Ex02.dto.MealDto;
 import com.example.Ex02.dto.UserGoalDto;
 import com.example.Ex02.dto.UserMainDto;
@@ -73,7 +72,7 @@ public class DashboardController {
         int totalCalories = todayMeals.stream()
                 .mapToInt(m -> m.getCalories() != null ? m.getCalories() : 0)
                 .sum();
-
+        
         // 항상 최신 목표치 재계산 (체중 변경 시 즉시 반영)
         UserGoalDto goal = calculateUserGoal(user);
         goal.setUserId(userId);
@@ -82,10 +81,7 @@ public class DashboardController {
         UserGoalDto existingGoal = userGoalMapper.findUserGoal(userId);
         if (existingGoal == null) {
             userGoalMapper.insertUserGoal(goal);
-        } else {
-            userGoalMapper.updateUserGoal(goal);
         }
-
         // 저장된 최신 목표치 재조회
         UserGoalDto refreshedGoal = userGoalMapper.findUserGoal(userId);
 
