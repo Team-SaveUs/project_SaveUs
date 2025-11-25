@@ -26,5 +26,6 @@ public class ObesityRateService {
 
         return (int) Math.round(probability);
     }
+
 }
 
