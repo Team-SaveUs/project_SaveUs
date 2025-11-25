@@ -59,20 +59,12 @@ public class DashboardController {
                 .mapToInt(m -> m.getCalories() != null ? m.getCalories() : 0)
                 .sum();
 
-        // 항상 목표치 재계산
-        UserGoalDto goal = calculateUserGoal(user);
-        goal.setUserId(userId);
-
-        // DB 반영
-        UserGoalDto existingGoal = userGoalMapper.findUserGoal(userId);
-        if (existingGoal == null) {
+        UserGoalDto goal = userGoalMapper.findUserGoal(userId);
+        if (goal == null) {
+            goal = calculateUserGoal(user);
+            goal.setUserId(userId);
             userGoalMapper.insertUserGoal(goal);
-        } else {
-            userGoalMapper.updateUserGoal(goal);
         }
-
-        // DB에서 최신 목표치 다시 조회
-        UserGoalDto refreshedGoal = userGoalMapper.findUserGoal(userId);
 
         int percentCalories = goal.getCaloriesKcal() > 0
                 ? (int) (totalCalories / (double) goal.getCaloriesKcal() * 100) : 0;

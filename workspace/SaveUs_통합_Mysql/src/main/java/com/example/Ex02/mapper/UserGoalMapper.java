@@ -9,6 +9,4 @@ public interface UserGoalMapper {
     UserGoalDto findUserGoal(Long userId);
     // 목표 추가
     void insertUserGoal(UserGoalDto dto);
-    // 목표 갱신
-    void updateUserGoal(UserGoalDto goal);
 }
