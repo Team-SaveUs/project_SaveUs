@@ -7,6 +7,7 @@ import com.example.Ex02.mapper.MealMapper;
 import com.example.Ex02.mapper.UserGoalMapper;
 import com.example.Ex02.mapper.UserMainMapper;
 import com.example.Ex02.mapper.UserMapper;
+import com.example.Ex02.service.ObesityRateService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
