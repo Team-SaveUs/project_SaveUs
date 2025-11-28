@@ -91,6 +91,47 @@
     </div>
 
     <hr class="section-divider">
+    <!-- 운동 추천 카드 -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="title-with-tooltip">
+                오늘의 맞춤 운동 추천
+                <span class="tooltip">?
+                <span class="tooltip-text">
+                    이 추천은 사용자의 기본 정보(BMI, 연령, 성별 등)와<br>
+                    AI 분석 기반 운동군 분류에 따라 생성된 루틴입니다.<br><br>
+                    * 준비운동 → 본운동 → 정리운동 순서로 구성됩니다.<br>
+                    * 매일 새롭게 추천되며, 신체 부하를 고려해 구성됩니다.
+                </span>
+            </span>
+            </h3>
+        </div>
+
+        <div class="card-flex-content" id="exerciseContent">
+            <div class="content-center">
+
+                <div class="exercise-block">
+                    <h4 class="exercise-title">준비운동</h4>
+                    <p id="exercisePrep">-</p>
+                </div>
+
+                <div class="exercise-block">
+                    <h4 class="exercise-title">본운동</h4>
+                    <ul id="exerciseMain"></ul>
+                </div>
+
+                <div class="exercise-block">
+                    <h4 class="exercise-title">정리운동</h4>
+                    <p id="exerciseCool">-</p>
+                </div>
+
+            </div>
+
+            <p class="chart-caption">
+                * AI 분석 기반 맞춤형 운동 루틴입니다.
+            </p>
+        </div>
+    </div>
 
     <h3 class="section-title">최근 건강 트렌드 (최근 30일)</h3>
 
