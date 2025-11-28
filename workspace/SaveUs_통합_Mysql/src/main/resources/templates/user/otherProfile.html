@@ -15,85 +15,106 @@
 
     <div class="profile-wrapper">
 
-        <!-- 🔹 타이틀 -->
         <h2 class="mypage-title" th:text="${profile.nickname + ' 님의 프로필'}"></h2>
 
-        <!-- 🔹 프로필 카드 -->
         <div class="profile-card">
 
             <div class="profile-banner"></div>
 
-            <div class="profile-inner">
-
-                <img class="profile-img"
-                     th:src="${profile.profileImageUrl != null ? profile.profileImageUrl : '/images/user-default.png'}">
-
-                <div class="profile-info">
-
-                    <h3 th:text="${profile.nickname}"></h3>
-
-                    <div class="profile-tags">
-                        <span class="goal-tag"
-                              th:text="${profile.mainGoal == 0 ? '감량' :
-                                   profile.mainGoal == 1 ? '증량' : '건강식'}"></span>
-
-                        <span class="persona-tag"
-                              th:if="${dietType != null}"
-                              th:text="${dietType}"></span>
+            <div class="profile-content">
+                <div class="profile-header">
+                    <div class="profile-img-wrapper">
+                        <img class="profile-img"
+                             th:src="${profile.profileImageUrl != null ? profile.profileImageUrl : '/images/user-default.png'}">
                     </div>
 
-                    <p>이메일: <span th:text="${profile.email}"></span></p>
-                    <p>가입일: <span th:text="${#temporals.format(profile.createdAt,'yyyy-MM-dd')}"></span></p>
+                    <div class="profile-text">
+                        <div class="name-row">
+                            <h3 class="profile-name" th:text="${profile.nickname}"></h3>
 
+                            <span class="goal-badge"
+                                  th:text="${profile.mainGoal == 0 ? '🏃 다이어트' :
+                                       profile.mainGoal == 1 ? '💪 벌크업' : '🥗 건강관리'}">
+                            </span>
+                        </div>
+
+                        <p class="email-text" th:text="${profile.email}"></p>
+
+                        <div class="profile-meta">
+                            <span>가입일: <span th:text="${#temporals.format(profile.createdAt,'yyyy.MM.dd')}"></span></span>
+                            <span class="divider">|</span>
+                            <span>성별: <span th:text="${profile.gender == 'M' ? '남성' : '여성'}"></span></span>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <span class="label">키</span>
+                        <strong class="value" th:text="${profile.height} + ' cm'">180 cm</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label">체중</span>
+                        <strong class="value" th:text="${profile.currentWeight} + ' kg'">75 kg</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label">BMI</span>
+                        <strong class="value bmi-value" th:text="${profile.bmi}">23.1</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label">식단 유형</span>
+                        <strong class="value type-value"
+                                th:text="${dietType != null ? dietType : '미분석'}">저탄고지</strong>
+                    </div>
+                </div>
+
             </div>
         </div>
 
 
-        <!-- 🔹 획득 뱃지 카드 -->
         <section class="badge-section">
             <h3>획득 뱃지</h3>
 
-            <div class="badge-list">
-
-                <div th:if="${#lists.isEmpty(badges)}" style="color:#aaa;">
+            <div class="badge-grid">
+                <div th:if="${#lists.isEmpty(badges)}" class="empty-state">
                     아직 획득한 뱃지가 없습니다.
                 </div>
 
                 <div class="badge-card" th:each="b : ${badges}">
-                    <img th:src="${b.imageUrl}">
-                    <h4 th:text="${b.title}"></h4>
-                    <p th:text="${b.description}"></p>
+                    <div class="badge-icon-wrapper">
+                        <img th:src="${b.imageUrl}">
+                    </div>
+                    <div class="badge-info">
+                        <h4 th:text="${b.title}"></h4>
+                        <p th:text="${b.description}"></p>
+                    </div>
                 </div>
-
             </div>
         </section>
 
 
-        <!-- 🔹 챌린지 카드 -->
         <section class="challenge-section">
             <h3>진행 중인 챌린지</h3>
 
-            <div class="challenge-list">
-
-                <div th:if="${#lists.isEmpty(challenges)}" style="color:#aaa;">
+            <div class="my-challenge-grid">
+                <div th:if="${#lists.isEmpty(challenges)}" class="empty-state">
                     진행 중인 챌린지가 없습니다.
                 </div>
 
-                <div class="challenge-card" th:each="c : ${challenges}">
-                    <h4 th:text="${c.title}"></h4>
-                    <p th:text="${c.description}"></p>
+                <div class="challenge-card-simple" th:each="c : ${challenges}">
+                    <div class="card-top">
+                        <h4 th:text="${c.title}"></h4>
+                        <span class="percent-badge"
+                              th:text="${(c.progressPercent != null ? c.progressPercent : 0) + '%'}"></span>
+                    </div>
 
-                    <div class="progress-bar">
+                    <p class="desc" th:text="${c.description}"></p>
+
+                    <div class="progress-bar-wrapper">
                         <div class="fill"
                              th:style="'width:' + ${c.progressPercent != null ? c.progressPercent : 0} + '%'"></div>
                     </div>
-
-                    <p class="percent"
-                       th:text="${(c.progressPercent != null ? c.progressPercent : 0) + '% 진행중!'}"></p>
-
                 </div>
-
             </div>
         </section>
 

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================================
-    // 1. 탭 전환 로직
+    // 탭 전환 로직
     // ============================================================
     const tabsContainer = document.querySelector('.challenge-tabs');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -62,17 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ============================================================
-    // 2. 리더보드 모달 로직 (오류 수정됨)
+    // 리더보드 모달 로직 (오류 수정됨)
     // ============================================================
 
     const modal = document.getElementById('leaderboardModal');
     const closeBtn = modal ? modal.querySelector('.close-btn') : null;
     const list = document.getElementById('fullLeaderboardList');
 
-    // [수정] 모달 열기 버튼을 안전하게 찾기
+    // 모달 열기 버튼을 안전하게 찾기
     const leaderboardBtn = document.querySelector('.btn-view-all');
 
-    // (1) 모달 열기 함수
+    // 모달 열기 함수
     function openLeaderboardModal(e) {
         if(e) e.preventDefault(); // a 태그 링크 이동 방지
         console.log('Top 50 버튼 클릭됨!'); // [디버깅용 로그]
@@ -110,12 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error('랭킹 로딩 실패:', err));
     }
 
-    // (2) 모달 닫기 함수
+    // 모달 닫기 함수
     function closeLeaderboardModal() {
         if (modal) modal.style.display = 'none';
     }
 
-    // (3) 이벤트 리스너 연결 [수정]
+    // 이벤트 리스너 연결 [수정]
     if (leaderboardBtn) {
         leaderboardBtn.addEventListener('click', openLeaderboardModal);
         console.log('Top 50 버튼 이벤트 연결 완료'); // [디버깅용 로그]

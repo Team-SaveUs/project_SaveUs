@@ -1,841 +1,501 @@
-/*-------------------------------------------------------------------------------*/
-/* :root {
-    --color-primary: #1abc9c;
-    --color-primary-light: #e8f8f5;
-    --color-text-primary: #343a40;
-    --color-text-secondary: #6c757d;
-    --color-border: #dee2e6;
-    --color-bg-app: #f8f9fa;
-    --color-white: #ffffff;
-} */
+/* =================================================================
+   Community.css - Final Fixed Version
+   ================================================================= */
 
-/* 카드 공통 스타일 (게시물, 폼, 위젯) */
-.card {
-    background-color: var(--color-white, #ffffff);
-    border: 1px solid var(--color-border, #dee2e6);
-    border-radius: 12px;
-    padding: 24px;
+/* 1. 디자인 토큰 */
+:root {
+    --primary: #1DAB87;
+    --primary-dark: #158F70;
+    --primary-light: #E8F8F3;
+
+    --secondary: #FF9900;
+
+    --bg-page: #F5F7FA;
+    --bg-card: #FFFFFF;
+    --border-color: #E2E8F0;
+
+    --text-main: #2D3748;
+    --text-sub: #718096;
+
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --radius-card: 16px;
 }
 
-/* 커뮤니티 페이지 레이아웃 */
+/* 유틸리티 클래스 (JS 기능 필수) */
+.hidden { display: none !important; }
+
+/* 2. 레이아웃 구조 */
 .community-layout {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* 2:1 비율 */
-    gap: 24px;
-    align-items: flex-start; /* 위젯이 피드보다 짧아도 위쪽 정렬 유지 */
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+    align-items: flex-start;
+    padding-bottom: 60px;
 }
 
-/* 1. 메인 피드 영역 */
-.feed-main {
-    display: flex;
-    flex-direction: column;
-    gap: 24px; /* 섹션 간 간격 */
+.page-header { grid-column: 1 / -1; margin-bottom: 16px; }
+.page-header h1 { font-size: 28px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+.page-header p { font-size: 16px; color: var(--text-sub); }
+
+/* =================================================================
+   3. 새 글 작성 폼
+   ================================================================= */
+.new-post-form {
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 24px;
+    margin-bottom: 24px;
+    border: none;
 }
 
-/* 헤더가 그리드의 전체 너비(두 칸 모두)를 차지하도록 설정 */
-.community-layout .page-header {
-    grid-column: 1 / -1; /* 첫 번째 라인부터 끝 라인까지 확장 */
-    margin-bottom: 10px; /* 헤더와 아래 컨텐츠(폼/사이드바) 사이의 간격 미세 조정 */
-}
-
-.page-header h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--color-text-primary, #343a40);
-    margin-bottom: 8px; /* 폼과의 간격 */
-}
-
-/* 새 글 작성 폼 */
 .new-post-form textarea {
-    width: 100%;
-    min-height: 80px;
-    border: 1px solid var(--color-border, #dee2e6);
-    border-radius: 8px;
-    padding: 12px;
-    font-family: inherit;
-    font-size: 16px;
-    resize: vertical;
+    width: 100%; min-height: 100px;
+    border: 1px solid var(--border-color); border-radius: 12px;
+    padding: 16px; font-size: 15px; resize: none; outline: none;
+    background-color: #FAFAFA; transition: all 0.2s;
 }
+.new-post-form textarea:focus { border-color: var(--primary); background-color: #fff; }
 
 .post-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
+    display: flex; justify-content: space-between; align-items: center; margin-top: 16px;
 }
 
-.custom-file-button,
-.post-button,
-.comment-submit-btn {
-    /* 정사각형(42x42) 대신 가로가 긴 직사각형으로 변경 */
-    width: 54px;  /* 가로 너비 */
-    height: 40px; /* 세로 높이 */
-    border-radius: 8px; /* 모서리 둥글기 유지 */
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0; /* 기본 패딩 제거 */
-    margin: 0;  /* 기본 마진 제거 */
-
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+.custom-file-button {
+    width: 44px; height: 44px; border-radius: 12px;
+    background-color: var(--primary-light); color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 20px; transition: all 0.2s; margin: 0;
 }
-
-.custom-file-button i,
-.post-button i,
-.comment-submit-btn i {
-    font-size: 20px; /* 아이콘 크기 통일 (필요하면 18px or 22px 조절) */
-    line-height: 1;  /* 줄간격으로 위아래 쏠림 방지 */
-    display: inline-flex; /* 아이콘 자체 정렬 보정 */
-}
-
-.new-post-form .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0px;
-}
-
-/* 새 글 폼 - 파일 업로드 */
-.new-post-form .form-file-upload {
-    margin-top: 0px;
-}
+.custom-file-button:hover { background-color: #D1F2E8; transform: translateY(-2px); }
 
 .post-button {
-    background-color: var(--color-primary, #1abc9c);
-    color: var(--color-white, #ffffff);
-    font-weight: 600;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    background-color: var(--primary); color: white; font-weight: 700;
+    border: none; border-radius: 12px; padding: 0 24px; height: 44px;
+    font-size: 15px; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(29, 171, 135, 0.2);
+}
+.post-button:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+
+/* 새 글 작성 시 이미지 미리보기 영역 */
+#image-preview-container {
+    margin-top: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background-color: #000;
 }
 
-.post-button:hover {
-    background-color: #178a71; /* Primary color darker */
-}
-
-/* 피드 필터 */
+/* =================================================================
+   4. 필터 탭
+   ================================================================= */
 .feed-filters {
-    display: flex;
-    gap: 8px;
-    border-bottom: 1px solid var(--color-border, #dee2e6);
-    padding-bottom: 4px;
+    display: flex; gap: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px;
+}
+.filter-tab {
+    background: none; border: none; font-size: 16px; font-weight: 600;
+    color: var(--text-sub); padding: 12px 4px; cursor: pointer; position: relative;
+}
+.filter-tab.active { color: var(--primary); }
+.filter-tab.active::after {
+    content: ''; position: absolute; bottom: -1px; left: 0; width: 100%;
+    height: 3px; background-color: var(--primary); border-radius: 3px 3px 0 0;
 }
 
-.feed-filters .filter-tab {
-    background: none;
-    border: none;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--color-text-secondary, #6c757d);
-    padding: 8px 16px;
-    border-radius: 8px 8px 0 0;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-}
-
-.feed-filters .filter-tab.active {
-    color: var(--color-primary, #1abc9c);
-    border-bottom-color: var(--color-primary, #1abc9c);
-}
-
-/* 게시물 카드 */
+/* =================================================================
+   5. 게시물 카드 (Post Card)
+   ================================================================= */
 .post-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
     padding: 24px;
+    margin-bottom: 24px;
+    border: none;
 }
 
-/* .post-header (수정/삭제 버튼을 위해) */
+/* 헤더 */
 .post-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    position: relative; /* 버튼 메뉴 기준 */
+    display: flex; align-items: center; gap: 14px; margin-bottom: 16px; position: relative;
 }
-
 .post-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;
 }
-
-/* .post-author-info (수정/삭제 버튼을 위해) */
 .post-author-info {
-    flex-grow: 1; /* 중간 영역을 채움 */
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
 }
+.author-name { font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+.author-details { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
+.author-persona { color: var(--primary); font-weight: 600; }
 
-.post-author-info .author-name {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--color-text-primary, #343a40);
-    display: block;
+.post-actions-menu { display: flex; gap: 8px; margin-left: 10px; }
+.post-edit-btn, .post-delete-btn {
+    background: none; border: none; color: var(--text-sub); font-size: 13px; cursor: pointer;
 }
-
-.post-author-info .author-details {
-    font-size: 14px;
-    color: var(--color-text-secondary, #6c757d);
-}
-
-.author-details .author-persona {
-    font-weight: 500;
-    color: var(--color-primary, #1abc9c); /* 페르소나 색상 강조 */
-}
+.post-edit-btn:hover, .post-delete-btn:hover { text-decoration: underline; color: var(--text-main); }
 
 .post-health-score {
-    font-size: 14px;
-    color: var(--color-text-secondary, #6c757d);
+    background-color: var(--primary-light); color: var(--primary);
+    font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 20px;
 }
 
-.post-health-score strong {
-    font-weight: 700;
-    color: var(--color-primary, #1abc9c);
-    font-size: 16px;
-}
-
-/* .post-content-text (더보기 기능) */
-.post-content-container {
-    position: relative;
-    margin-bottom: 16px;
-}
-
+/* 본문 */
+.post-content-container { margin-bottom: 16px; margin-top: 8px; }
 .post-content-text {
-    font-size: 16px;
-    color: var(--color-text-primary, #343a40);
-    line-height: 1.7;
-
-    /* 더보기 기능 */
-    max-height: 72px; /* 3줄 정도 (line-height * 3) */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    /* white-space: pre-wrap; */
-    overflow-wrap: break-word;
+    font-size: 15px; color: var(--text-main); line-height: 1.6;
+    max-height: 72px; overflow: hidden; text-overflow: ellipsis; /* 더보기 전 기본 */
 }
-
-.post-content-text.expanded {
-    max-height: none;
-    overflow: visible;
-}
-
+.post-content-text.expanded { max-height: none; overflow: visible; }
 .more-button {
-    background: none;
-    border: none;
-    color: var(--color-text-secondary, #6c757d);
-    cursor: pointer;
-    font-weight: 600;
-}
-.more-button.hidden {
-    display: none;
+    background: none; border: none; color: var(--text-sub);
+    font-weight: 600; cursor: pointer; margin-top: 4px;
 }
 
-
-/* .post-actions-bar (기존 .post-actions 대체) */
-.post-actions-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* 아이콘 버튼 사이 간격 */
-    padding: 8px 0px; /* 상하 패딩 */
-    border-top: 1px solid var(--color-border, #dee2e6);
-    border-bottom: 1px solid var(--color-border, #dee2e6);
-    margin-bottom: 16px;
-}
-
-
-/* --- 2. 오른쪽 사이드바 --- */
-.feed-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    /* .card 스타일을 재사용 */
-}
-
-.sidebar-widget h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: var(--color-text-primary, #343a40);
-}
-
-/* 트렌딩 목록 */
-.trending-list li {
-    margin-bottom: 12px;
-}
-.trending-list {
-    padding-left: 0;
-    list-style: none;
-}
-.trending-list a {
-    display: block;
-    font-size: 14px;
-    color: var(--color-text-secondary, #6c757d);
-    line-height: 1.4;
-    text-decoration: none;
-}
-
-.trending-list a strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--color-text-primary, #343a40);
-    margin-bottom: 2px;
-}
-
-.trending-list a:hover strong {
-    color: var(--color-primary, #1abc9c);
-}
-
-/* 페르소나 필터 */
-.persona-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.persona-filters .persona-tag {
-    background-color: var(--color-primary-light, #e8f8f5);
-    color: var(--color-primary, #1abc9c);
-    border: none;
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.persona-filters .persona-tag:hover {
-    background-color: #d1f3e9;
-}
-
-/* --- 1. Modal 배경 (기존 유지하되 정렬 방식 변경) --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden; /* 모달 전체 스크롤 방지 (내부만 스크롤) */
-    background-color: rgba(0, 0, 0, 0.75); /* 배경을 조금 더 어둡게 */
-
-    /* 모달을 화면 정중앙에 배치하기 위한 Flex 설정 */
-    align-items: center;
-    justify-content: center;
-    /* 주의: JS에서 display='block'으로 켜더라도 아래 content의 margin으로 커버 가능 */
-}
-
-/* ---  모달 내용 박스 크기 대폭 확대 --- */
-.modal-content {
-    background-color: #fefefe;
-    /* margin: 10% auto; -> 제거 (화면이 작으면 잘릴 수 있음) */
-    margin: 2vh auto; /* 상하 여백 최소화 */
-
-    padding: 0;
-    border: none; /* 테두리 제거하고 깔끔하게 */
-
-    width: 95%;       /* 가로 너비 95% 사용 */
-    max-width: 1200px; /* 최대 너비 900px -> 1200px로 확장 (PC에서 크게 보임) */
-    height: 90vh;      /* 높이 85vh -> 90vh로 확장 */
-
+/* ★ [수정 1] 미디어 캐러셀 (완전히 망가진 부분 복구) ★ */
+.post-media-carousel {
     position: relative;
-    border-radius: 8px;
+    width: 100%;
+    /* 높이는 JS나 이미지 비율에 따라 자동 조절되지만 기본값 설정 */
+    background-color: #000;
+    border-radius: 12px;
     overflow: hidden;
-    display: flex;     /* 내부 컨테이너를 꽉 채우기 위해 flex 사용 */
-    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.carousel-inner {
+    display: flex; /* 이미지 가로 나열 필수 */
+    transition: transform 0.3s ease-in-out;
+    width: 100%;
+}
+
+.carousel-image {
+    min-width: 100%; /* 부모 너비 꽉 채움 */
+    width: 100%;
+    object-fit: contain; /* 비율 유지 */
+    display: block;
+    max-height: 600px; /* 너무 길어지지 않게 */
+}
+
+/* 캐러셀 화살표 & 점 */
+.carousel-control {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.7); border: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    cursor: pointer; font-size: 18px; display: flex;
+    align-items: center; justify-content: center; z-index: 10;
+}
+.carousel-control.prev { left: 10px; }
+.carousel-control.next { right: 10px; }
+
+.carousel-indicator {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 10;
+}
+.dot {
+    width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer;
+}
+.dot.active { background: #fff; }
+
+
+/* 액션 바 (좋아요/댓글) */
+.post-actions-bar {
+    display: flex; align-items: center; gap: 16px; padding: 12px 0;
+    border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
+    margin-bottom: 16px;
+}
+.like-button, .comment-button {
+    background: none; border: none; display: flex; align-items: center; gap: 6px;
+    cursor: pointer; font-size: 15px; color: var(--text-main); font-weight: 500;
+}
+.like-button i, .comment-button i { font-size: 22px; }
+.like-button.active i { color: #FF4757; }
+.like-button:active i { transform: scale(1.2); } /* 콩닥 애니메이션 복구 */
+
+
+/* ★ [수정 2] 게시물 수정 모드 (버튼 줄바꿈 & 이미지 삭제 복구) ★ */
+.post-edit-mode {
+    display: flex;
+    flex-wrap: wrap; /* 내용물 많으면 줄바꿈 허용 */
+    align-items: center;
+    justify-content: space-between; /* 양 끝 정렬 */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* 텍스트 에디터 */
+.post-edit-textarea {
+    width: 100%; order: 1;
+    border: 1px solid var(--border-color); border-radius: 12px;
+    padding: 12px; min-height: 100px; resize: vertical; outline: none;
+    font-family: inherit; font-size: 15px;
+}
+
+/* 수정 중인 이미지 미리보기 컨테이너 */
+#edit-preview-container {
+    width: 100%; order: 2; margin-bottom: 10px;
+}
+
+/* 개별 이미지 삭제 버튼 스타일 (JS 동적 생성) */
+.delete-image-btn {
+    position: absolute; top: 5px; right: 5px;
+    background: rgba(0,0,0,0.6); color: white;
+    border: none; border-radius: 50%; width: 24px; height: 24px;
+    cursor: pointer; z-index: 20; display: flex;
+    align-items: center; justify-content: center; font-size: 14px;
+}
+
+/* 카메라 버튼 (왼쪽) */
+.post-edit-mode .custom-file-upload {
+    order: 3; margin: 0;
+}
+
+/* 저장/취소 버튼 (오른쪽) */
+.post-edit-mode .edit-actions {
+    order: 4; display: flex; gap: 8px;
+}
+.edit-save-btn {
+    background-color: var(--primary); color: white;
+    padding: 8px 16px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;
+}
+.edit-cancel-btn {
+    background-color: #EDF2F7; color: var(--text-main);
+    padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;
+}
+
+
+/* 댓글 입력창 (피드 내) */
+.post-comments-summary .comment-input-area {
+    display: flex; gap: 10px; align-items: center;
+}
+.comment-input-field {
+    flex-grow: 1; background-color: #FAFAFA; border: 1px solid var(--border-color);
+    border-radius: 20px; padding: 10px 16px; font-size: 14px; outline: none;
+}
+.comment-input-field:focus { border-color: var(--primary); background: #fff; }
+.comment-submit-btn {
+    background: none; border: none; color: var(--primary); font-weight: 700;
+    font-size: 15px; cursor: pointer; padding: 0 10px;
+}
+
+
+/* =================================================================
+   6. 사이드바 위젯
+   ================================================================= */
+.feed-sidebar { display: flex; flex-direction: column; gap: 24px; }
+.sidebar-widget {
+    background: var(--bg-card); border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card); padding: 24px; border: none;
+}
+.sidebar-widget h3 {
+    font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text-main);
+    border-left: 4px solid var(--primary); padding-left: 10px;
+}
+.trending-list { list-style: none; padding: 0; margin: 0; }
+.trending-list li { margin-bottom: 12px; border-bottom: 1px solid #F0F0F0; padding-bottom: 12px; }
+.trending-list li:last-child { border: none; }
+.trending-post strong { display: block; font-size: 14px; color: var(--text-main); margin-bottom: 4px; }
+.trending-post span { font-size: 13px; color: var(--text-sub); }
+
+.persona-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.persona-tag {
+    background-color: var(--bg-page); color: var(--text-sub); border: none;
+    border-radius: 20px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.persona-tag:hover, .persona-tag.active {
+    background-color: var(--primary-light); color: var(--primary);
+}
+
+
+/* =================================================================
+   7. ★ [수정 3] 모달 (Modal) - 스타일 전면 수정 ★
+   ================================================================= */
+.modal {
+    display: none; /* JS 제어 */
+    position: fixed; z-index: 2000; left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* 배경 더 어둡게 */
+    justify-content: center; align-items: center; /* 중앙 정렬 */
+}
+
+/* 모달 컨텐츠 박스 (비율 문제 해결) */
+.modal-content {
+    background-color: #fff;
+    width: 90%; max-width: 1100px; /* 넓게 */
+    height: 85vh; /* 높게 */
+    border-radius: 12px;
+    overflow: hidden; /* 둥근 모서리 유지 */
+    display: flex; /* 내부 좌우 배치용 */
+    position: relative;
+    margin: 0; /* 중앙 정렬을 위해 margin 제거 (flex가 해줌) */
 }
 
 /* 닫기 버튼 */
 .close-button {
-    color: #fff; /* 검은 배경(이미지쪽)에 뜰 수도 있으니 흰색 추천, 혹은 z-index로 조정 */
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 35px; /* 크기 키움 */
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1010;
-    text-shadow: 0 0 5px rgba(0,0,0,0.5); /* 배경이 흰색일 때도 잘 보이게 그림자 추가 */
+    position: absolute; top: 15px; right: 20px;
+    color: #fff; font-size: 30px; font-weight: bold;
+    cursor: pointer; z-index: 2010; text-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
-/* --- 내부 컨테이너 높이 제한 해제 --- */
+/* 내부 컨테이너 (JS 구조에 맞춤) */
 .modal-body-container {
-    display: flex;
-    width: 100%;
-    height: 100%; /* 부모(.modal-content) 높이를 100% 채움 */
-    /* max-height: 70vh;  <-- [삭제] 이게 있으면 모달이 커져도 내용은 작게 나옴 */
+    display: flex; /* 좌우 배치 핵심 */
+    width: 100%; height: 100%;
 }
 
-/* --- 왼쪽: 이미지 영역 --- */
+/* [왼쪽] 사진 영역 (60%) */
 .modal-post-media {
-    width: 60%; /* flex: 1.5 대신 명시적 % 사용 추천 */
-    height: 100%;
-    background: #000; /* 이미지 빈 공간 검은색 */
-    position: relative;
-    overflow: hidden;
-
-    /* 이미지를 영역 정중앙에 배치 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 0 0 60%;
+    width: 60%; height: 100%;
+    background-color: #000;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+}
+.modal-post-media .carousel-image {
+    max-width: 100%; max-height: 100%;
+    object-fit: contain; /* 비율 유지하며 다 보여주기 */
 }
 
-/* 캐러셀 이미지 스타일 (JS에서 생성하는 img 태그 대응) */
-.modal-post-media img,
-.modal-carousel-image {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;  /* 가로 세로 비율 유지 */
-    height: auto; /* 가로 세로 비율 유지 */
-    object-fit: contain; /* 이미지가 잘리지 않고 전체가 다 보이게 */
-}
-
-/* --- 오른쪽: 댓글 영역 --- */
+/* [오른쪽] 댓글 영역 (40%) */
 .modal-comments-area {
-    width: 40%; /* 나머지 40% */
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    flex: 0 0 40%;
+    width: 40%; height: 100%;
     background: #fff;
-    border-left: 1px solid #ddd;
+    display: flex; flex-direction: column;
+    z-index: 10;
 }
 
-/* 헤더, 본문, 입력창 */
-.modal-post-header, .modal-post-content {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    flex-shrink: 0; /* 스크롤 될 때 줄어들지 않도록 고정 */
+/* 모달 헤더 & 본문 */
+.modal-post-header {
+    padding: 16px; border-bottom: 1px solid #eee;
+    display: flex; align-items: center; gap: 12px;
+}
+.modal-post-content {
+    padding: 16px; border-bottom: 1px solid #eee;
+    font-size: 14px; line-height: 1.5; color: var(--text-main);
 }
 
-/* 댓글 리스트 (여기가 스크롤 됨) */
+/* 댓글 리스트 (스크롤) */
 .modal-comments-list {
-    flex-grow: 1;
-    padding: 15px;
-    overflow-y: auto; /* 댓글 내용만 스크롤 */
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 16px;
 }
 
-/* 댓글 입력창 (하단 고정) */
+/* 댓글 아이템 디자인 */
+.comment-item {
+    display: flex; gap: 10px; align-items: flex-start; position: relative;
+}
+.comment-avatar { width: 32px; height: 32px; border-radius: 50%; }
+.comment-text-content { flex: 1; font-size: 14px; }
+.comment-author { font-weight: 700; margin-right: 6px; font-size: 13px; }
+.comment-time { display: block; font-size: 11px; color: #999; margin-top: 4px; }
+
+/* 댓글 수정/삭제 버튼 */
+.comment-actions { position: absolute; right: 0; top: 0; }
+.comment-edit-btn, .comment-delete-btn {
+    font-size: 11px; color: #999; border: none; background: none; cursor: pointer;
+}
+
+/* ★ [수정 4] 모달 댓글 입력창 (통일감) ★ */
 .modal-comment-input {
-    padding: 15px;
-    border-top: 1px solid #eee;
-    background: #fff;
-    margin-top: 0; /* auto 제거 */
-    display: flex;
-    gap: 10px;
-    flex-shrink: 0; /* 높이 고정 */
+    padding: 16px; border-top: 1px solid #eee;
+    display: flex; gap: 10px; background: #fff;
 }
-
+/* 피드 입력창(.comment-input-field)과 동일한 스타일 적용 */
 .modal-comment-input input {
-    flex-grow: 1;
-    border: 1px solid #ddd;
+    flex: 1;
+    background-color: #FAFAFA;
+    border: 1px solid var(--border-color);
     border-radius: 20px; /* 둥글게 */
-    padding: 10px 15px;
+    padding: 10px 16px;
+    font-size: 14px;
     outline: none;
 }
-
+.modal-comment-input input:focus {
+    border-color: var(--primary); background: #fff;
+}
 .modal-comment-input button {
-    background: none;
-    border: none;
-    color: #0095f6; /* 인스타 블루 색상 */
-    font-weight: 600;
-    cursor: pointer;
+    background: none; border: none;
+    color: var(--primary); font-weight: 700; cursor: pointer;
 }
 
-.modal-post-media {
-    width: 60%;        /* 모달의 60% 차지 */
-    height: 100%;      /* 높이 꽉 채움 */
-    background: #000;  /* 빈 공간 검은색 */
-    position: relative;
-    overflow: hidden;  /* 틀 밖으로 나가는 이미지 숨김 */
+/* community.css 맨 아래에 추가 */
+
+/* 수정 모드 버튼들을 양옆으로 예쁘게 정렬 */
+.edit-actions-container {
     display: flex;
-    align-items: center; /* 세로 중앙 정렬 */
-}
-
-/* 내부 트랙: 이미지들이 가로로 길게 늘어선 기차 역할 */
-.modal-post-media .carousel-inner {
-    display: flex;            /* 가로로 나열 */
-    height: 100%;             /* 높이 100% */
-    width: 100%;              /* 너비 100% */
-    transition: transform 0.3s ease-in-out; /* 부드럽게 슬라이드 */
-}
-
-/* 개별 이미지: 무조건 틀 하나를 꽉 채우도록 설정 */
-.modal-post-media .carousel-image {
-    min-width: 100%;   /* 이미지 하나가 부모 너비를 100% 차지해야 함 */
-    width: 100%;       /* 너비 100% */
-    height: 100%;      /* 높이 100% */
-    object-fit: contain; /* 비율 유지하며 짤리지 않게 (검은 여백 생길 수 있음) */
-    /* object-fit: cover; <- 꽉 채우고 싶으면 이걸로 변경 (이미지 잘림) */
-    display: block;
-}
-
-/* [보너스] 좌우 화살표 버튼 위치 및 스타일 보정 */
-.modal-post-media .carousel-control {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.3); /* 반투명 흰색 배경 */
-    border: none;
-    color: #fff;
-    font-size: 2rem;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 10;
-    border-radius: 50%; /* 둥근 버튼 */
-    width: 50px;
-    height: 50px;
-    display: flex;
+    justify-content: space-between; /* 카메라(좌) <-> 버튼(우) 벌리기 */
     align-items: center;
-    justify-content: center;
-}
-
-.modal-post-media .carousel-control:hover {
-    background: rgba(255, 255, 255, 0.6);
-}
-
-.modal-post-media .carousel-control.prev { left: 15px; }
-.modal-post-media .carousel-control.next { right: 15px; }
-
-/* [보너스] 하단 점(Indicator) 위치 보정 */
-.modal-post-media .carousel-indicator {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-}
-
-.comment-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-}
-
-
-/* --- 3. Carousel Base --- */
-.post-media-carousel {
-    position: relative;
-    overflow: hidden;
-    background: #eee;
-    border-radius: 8px; /* 카드 모서리 */
-}
-
-.carousel-inner {
-    display: flex;
-    transition: transform 0.3s ease-in-out;
-    background: #242424;
-}
-
-.carousel-image {
     width: 100%;
-    flex-shrink: 0;
-    object-fit: cover;
-    aspect-ratio: 1 / 1; /* 정사각형 비율 */
+    margin-top: 15px;
 }
 
-.carousel-control {
-    position: absolute; /*오버레이*/
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.7);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-    line-height: 30px;
-    text-align: center;
-    z-index: 10;
+/* 기존 CSS 충돌 방지: 카메라 버튼 위쪽 여백 제거 */
+.post-edit-mode .custom-file-upload {
+    margin-top: 0 !important;
 }
 
-.carousel-control.prev {
-    left: 10px;
-}
-
-.carousel-control.next {
-    right: 10px;
-}
-
-.carousel-indicator {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 5px;
-    z-index: 10;
-}
-
-.carousel-indicator .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-}
-
-.carousel-indicator .dot.active {
-    background-color: rgba(255, 255, 255, 1);
-}
-
-/* --- 2. 좋아요/댓글 버튼 UI --- */
-.like-button, .comment-button {
-    display: flex;
-    align-items: center;
-    gap: 4px; /* 아이콘과 숫자 사이 간격 */
-
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px; /* 아이콘 크기 */
-    padding: 0;
-}
-
-/* 1. 하트 아이콘 기본 크기 및 위치 조정 */
-.like-button i {
-    font-size: 22px; /* 아이콘 크기 조절 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 4px; /* 숫자와의 간격 */
-    transition: transform 0.2s; /* 누를 때 콩닥거리는 효과용 */
-}
-
-/* 2. 빈 하트 (기본) - 검정 혹은 회색 */
-.bi-heart {
-    color: #333; /* 또는 var(--color-text-primary) */
-}
-
-/* 3. 채워진 하트 - 빨간색 */
-.bi-heart-fill {
-    color: #ff4757;
-    /* color: red; */
-}
-
-.like-button:active i {
-    transform: scale(1.2);
-}
-
-.like-count-text, .comment-count-text {
-    font-size: 16px; /* 숫자 폰트 크기 */
-    font-weight: 600;
-    color: #333;
-}
-
-/* --- 4. 수정/삭제 버튼 및 폼 CSS --- */
-
-/* 헤더의 수정/삭제 버튼 (우측 정렬) */
-.post-actions-menu {
+/* 버튼들 간격 조정 */
+.edit-actions {
     display: flex;
     gap: 8px;
-    margin-left: 10px;
-}
-.post-edit-btn, .post-delete-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #888;
-    font-size: 13px;
-}
-.post-edit-btn:hover, .post-delete-btn:hover {
-    color: #000;
 }
 
-/* 'in-place' 수정 폼 */
-.post-edit-mode {
-    padding: 12px 0 0 0; /* 위쪽 패딩 */
-}
-.post-edit-mode textarea {
-    width: 100%;
-    min-height: 100px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px;
-    margin-bottom: 10px;
-    font-family: inherit;
-    font-size: 16px;
-}
-.post-edit-mode .form-file-upload {
-    margin-bottom: 10px;
-}
-.post-edit-mode .edit-actions {
-    display: flex;
-    justify-content: flex-end; /* 버튼 우측 정렬 */
-    gap: 8px;
-}
-.post-edit-mode .edit-save-btn, .post-edit-mode .edit-cancel-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.post-edit-mode .edit-save-btn {
-    background-color: var(--color-primary, #1abc9c);
-    color: white;
-}
-.post-edit-mode .edit-cancel-btn {
-    background-color: #eee;
-}
+/* =================================================================
+   8. 댓글 수정 모드 스타일 (캡슐 모양)
+   ================================================================= */
 
-/* 모달(댓글) 내부 수정/삭제 */
-.comment-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    position: relative;
-    padding-right: 60px; /* 수정/삭제 버튼 공간 */
-    padding-bottom: 8px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #f0f0f0;
-}
-.comment-text-content {
-    flex-grow: 1;
-}
-
-.comment-time {
-    color: #ccc;
-}
-
-.comment-actions {
-    position: absolute;
-    right: 8px;
-    top: 8px;
-    display: flex;
-    gap: 5px;
-}
-
+/* 수정 입력창과 버튼을 감싸는 컨테이너 */
 .comment-edit-actions {
-    width: calc(100% - 45px);
-    position: absolute;
-    justify-content: space-between;
-    right: 8px;
-    top: 2px;
-    display: flex;
-    gap: 8px;
+    display: flex;       /* 가로 배치 */
+    align-items: center; /* 수직 중앙 정렬 */
+    width: 100%;         /* 전체 너비 사용 */
+    gap: 8px;            /* 입력창과 버튼 사이 간격 */
+    margin-top: 6px;
 }
 
-.comment-edit-btn,
-.comment-delete-btn,
- .comment-save-btn,
- .comment-cancel-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #aaa;
-    font-size: 12px;
-    width: 3em;
-}
-.comment-edit-btn:hover,
-.comment-delete-btn:hover,
- .comment-save-btn:hover,
- .comment-cancel-btn:hover {
-    color: #000;
-}
-/* 댓글 수정용 input */
 .comment-edit-input {
-    width: 100%;
-    border: 1px solid #007bff;
-    padding: 4px;
-    border-radius: 4px;
-}
-
-/* 댓글 입력창 */
-.comment-input-area {
-    display: flex;
-    width: 100%;
-    gap: 8px;
-    margin-top: 16px;
-}
-.comment-input-field {
     flex-grow: 1;
-    border: 1px solid var(--color-border, #dee2e6);
-    border-radius: 4px;
-    padding: 8px 12px;
-}
-.comment-submit-btn {
-    background: none;
-    border: none;
-    color: var(--color-primary, #1abc9c);
-    font-weight: 600;
-    cursor: pointer;
-    padding: 8px;
-}
-/*---수정 폼 이미지 (개별 삭제) --- */
-.edit-image-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-}
-.edit-image-item {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-.edit-image-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-}
-.delete-image-btn {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 20px;
-    height: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 12px;
-    line-height: 20px;
-    text-align: center;
-    padding: 0;
-}
-.edit-image-item.marked-for-deletion {
-    opacity: 0.4;
-}
-/* 3. 색상 설정 - 카메라 버튼 (연한 초록) */
-.custom-file-button {
-    background-color: var(--color-primary-light, #e8f8f5);
-    color: var(--color-primary, #1abc9c);
-    margin: 0; /* 기존 margin 제거 */
-}
-.custom-file-button:hover {
-    background-color: #d1f3e9;
-}
-
-.post-button,
-.comment-submit-btn {
-    background-color: var(--color-primary, #1abc9c); /* 배경색 통일 */
-    color: var(--color-white, #ffffff);            /* 아이콘 색상 통일 */
-}
-
-.post-button:hover,
-.comment-submit-btn:hover {
-    background-color: #178a71;
-}
-
-.new-post-form .form-file-upload,
-.new-post-form .form-actions {
-    margin: 0;
-    padding: 0;
-    display: block;
-}
-
-.file-name-text {
+    background-color: #FAFAFA;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 8px 16px;   /* 안쪽 여백 */
     font-size: 14px;
-    color: #555;
+    outline: none;
+    transition: all 0.2s;
+    font-family: inherit; /* 폰트 상속 */
 }
 
-.hidden { display: none; }
+/* 입력창 포커스 시 효과 */
+.comment-edit-input:focus {
+    border-color: var(--primary);
+    background-color: #fff;
+}
 
+.comment-save-btn, .comment-cancel-btn {
+    border: none;
+    background: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 12px;
+    white-space: nowrap; /* 줄바꿈 방지 */
+    transition: background 0.2s;
+}
+
+/* 저장 버튼 색상 */
+.comment-save-btn {
+    color: var(--primary);
+}
+.comment-save-btn:hover {
+    background-color: var(--primary-light);
+}
+
+/* 취소 버튼 색상 */
+.comment-cancel-btn {
+    color: var(--text-sub);
+}
+.comment-cancel-btn:hover {
+    background-color: #EDF2F7;
+    color: var(--text-main);
+}

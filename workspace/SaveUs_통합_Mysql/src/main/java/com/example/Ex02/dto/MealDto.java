@@ -25,6 +25,15 @@ public class MealDto {
     // 실제 DB 저장 시간(LocalDateTime)
     private LocalDateTime eatTime;
 
+    // 시간대별 영양소
+    private Integer caloriesBreakfast; // 아침 칼로리 (05~11시)
+    private Integer proteinBreakfast;  // 아침 단백질
+    private Integer caloriesLunch;     // 점심 칼로리
+    private Integer caloriesDinner;    // 저녁 칼로리
+    private Integer caloriesLateNight; // 야식 칼로리 (21~04시)
+
+    private Integer mealCount;
+
 
     public Long getEntryId() { return entryId; }
     public void setEntryId(Long entryId) { this.entryId = entryId; }
@@ -64,6 +73,54 @@ public class MealDto {
 
     public LocalDateTime getEatTime() { return eatTime; }
     public void setEatTime(LocalDateTime eatTime) { this.eatTime = eatTime; }
+
+    public Integer getCaloriesBreakfast() {
+        return caloriesBreakfast;
+    }
+
+    public void setCaloriesBreakfast(Integer caloriesBreakfast) {
+        this.caloriesBreakfast = caloriesBreakfast;
+    }
+
+    public Integer getProteinBreakfast() {
+        return proteinBreakfast;
+    }
+
+    public void setProteinBreakfast(Integer proteinBreakfast) {
+        this.proteinBreakfast = proteinBreakfast;
+    }
+
+    public Integer getCaloriesLunch() {
+        return caloriesLunch;
+    }
+
+    public void setCaloriesLunch(Integer caloriesLunch) {
+        this.caloriesLunch = caloriesLunch;
+    }
+
+    public Integer getCaloriesDinner() {
+        return caloriesDinner;
+    }
+
+    public void setCaloriesDinner(Integer caloriesDinner) {
+        this.caloriesDinner = caloriesDinner;
+    }
+
+    public Integer getCaloriesLateNight() {
+        return caloriesLateNight;
+    }
+
+    public void setCaloriesLateNight(Integer caloriesLateNight) {
+        this.caloriesLateNight = caloriesLateNight;
+    }
+
+    public Integer getMealCount() {
+        return mealCount;
+    }
+
+    public void setMealCount(Integer mealCount) {
+        this.mealCount = mealCount;
+    }
 
     @Override
     public String toString() {

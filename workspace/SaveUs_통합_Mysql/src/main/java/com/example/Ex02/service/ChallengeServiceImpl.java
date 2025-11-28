@@ -113,76 +113,6 @@ public class ChallengeServiceImpl implements ChallengeService {
         challengeMapper.joinChallenge(userId, challengeId, startValue);
     }
 
-   /* @Override
-    @Transactional
-    public void runDailyCheck() {
-        // '진행중(ONGOING)'인 모든 챌린지 가져오기
-        List<MyChallengeItemDto> activeChallenges = challengeMapper.findAllActiveChallenges();
-
-        for (MyChallengeItemDto uc : activeChallenges) {
-            boolean isSuccess = false;
-
-            // 유저의 오늘 영양 섭취량 가져오기 (NutritionMapper 필요)
-            // DailyNutritionDto dailyLog = nutritionMapper.getDailySummary(uc.getUserId(), LocalDate.now().minusDays(1));
-            // (테스트용 데이터: 영양섭취량 개발 완료 시 위 주석 풀고 연동)
-            Map<String, Double> dailyLog = new HashMap<>();
-            dailyLog.put("sodium", 1800.0); // ex) 어제 나트륨 1800 섭취
-            dailyLog.put("protein", 70.0);  // ex) 어제 단백질 70 섭취
-
-            // 챌린지 타입별로 채점
-            switch (uc.getChallengeType()) {
-                case "LIMIT": // "이하"여야 성공 (나트륨, 당류 등)
-                    double consumedLimit = dailyLog.getOrDefault(uc.getMetricKey(), 0.0);
-                    if (consumedLimit <= uc.getTargetValue()) {
-                        isSuccess = true;
-                    }
-                    break;
-
-                case "MINIMUM": // "이상"이어야 성공 (단백질, 식이섬유 등)
-                    double consumedMin = dailyLog.getOrDefault(uc.getMetricKey(), 0.0);
-                    if (consumedMin >= uc.getTargetValue()) {
-                        isSuccess = true;
-                    }
-                    break;
-
-                case "CHECK": // "변화량" 체크 (체중 감량)
-                    // 현재 체중 가져오기
-                    Double currentWeight = challengeMapper.getUserWeight(uc.getUserId()); // 매퍼에 추가 필요
-                    if (currentWeight != null && uc.getStartValue() != null) {
-                        // (시작 체중 - 현재 체중) >= 목표 감량치
-                        // 예: 목표가 -1kg. (70 - 69) = 1kg 감량.
-                        // TargetValue를 (1kg 감량)로 가정
-                        // 현재 체중 <= (시작 체중 + 목표변화량)
-                        // 예: 69 <= (70 + (-1)) -> 69 <= 69 (성공)
-                        if (currentWeight <= (uc.getStartValue() + uc.getTargetValue())) {
-                            isSuccess = true;
-                        }
-                    }
-                    break;
-            }
-
-            // 성공 시 업데이트
-            if (isSuccess) {
-                // DB 카운트 증가 (+1)
-                challengeMapper.increaseCurrentCount(uc.getUserChallengeId());
-
-                // ★ 최종 완료 체크 및 포인트 지급
-                if (uc.getCurrentCount() + 1 >= uc.getDurationDays()) {
-                    // 상태 완료 변경
-                    challengeMapper.completeChallenge(uc.getUserChallengeId());
-
-                    // 포인트 지급 (Challenges 테이블에 있는 점수만큼)
-                    if (uc.getPoints() != null && uc.getPoints() > 0) {
-                        challengeMapper.addUserPoint(uc.getUserId(), uc.getPoints());
-                    }
-                }
-            } else {
-                //  실패: 오늘 목표 달성 실패 시 즉시 'FAILED' 처리
-                challengeMapper.failChallenge(uc.getUserChallengeId());
-            }
-        }
-    }*/
-
     // 몇몇 유저의 챌린지 검증에서 오류가 발생하더라도 다른 유저의 검증은 정상적으로 처리되도록 분리
     // 하지만 유저 하나하나를 순서대로 검증하기때문에 시간소요
     @Override
@@ -218,7 +148,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         }
     }
 
-    // 한 건만 처리
+    /*// 한 건만 처리
     @Transactional
     public void verifySingleChallenge(MyChallengeItemDto uc) {
         boolean isSuccess = false;
@@ -287,6 +217,111 @@ public class ChallengeServiceImpl implements ChallengeService {
             challengeMapper.failChallenge(uc.getUserChallengeId());
         }
 
+    }*/
+
+    @Transactional
+    public void verifySingleChallenge(MyChallengeItemDto uc) {
+        // 1. 어제 영양 섭취량 가져오기 (Mapper에서 시간대별 쿼리 수정이 선행되어야 함)
+        MealDto dailyLog = mealMapper.findYesterdayTotalNutrition(uc.getUserId());
+        if (dailyLog == null) {
+            dailyLog = new MealDto(); // 기록이 없으면 0으로 처리
+        }
+
+        boolean isSuccess = false;
+
+        // DTO에서 챌린지 키(metricKey)에 맞는 값 꺼내오기
+        double currentValue = getValueByMetricKey(dailyLog, uc.getMetricKey());
+
+        // 2. 챌린지 타입별 성공 여부 판단
+        switch (uc.getChallengeType()) {
+            case "LIMIT": // [상한선] 목표치 '이하'면 성공 (나트륨, 당류 등)
+                if (currentValue <= uc.getTargetValue()) {
+                    isSuccess = true;
+                }
+                break;
+
+            case "MINIMUM": // [하한선] 목표치 '이상'이면 성공 (단백질, 식이섬유 등)
+                if (currentValue >= uc.getTargetValue()) {
+                    isSuccess = true;
+                }
+                break;
+
+            case "RANGE": // [범위] (새로 추가) 목표치의 ±10% 이내면 성공
+                // 예: 2000kcal ±10% -> 1800 ~ 2200 사이
+                double min = uc.getTargetValue() * 0.9;
+                double max = uc.getTargetValue() * 1.1;
+                if (currentValue >= min && currentValue <= max) {
+                    isSuccess = true;
+                }
+                break;
+
+            case "CHECK": // [목표 달성 확인] (체중 감량 등)
+                // 현재 체중 <= 시작 체중 + 목표 변화량
+                Double currentWeight = challengeMapper.getUserWeight(uc.getUserId());
+                if (currentWeight != null && uc.getStartValue() != null) {
+                    if (currentWeight <= (uc.getStartValue() + uc.getTargetValue())) {
+                        isSuccess = true;
+                    }
+                }
+                break;
+        }
+
+        // 3. 결과 처리 (성공/실패 로직 개선)
+        if (isSuccess) {
+            // [성공 시]
+            if ("CHECK".equals(uc.getChallengeType())) {
+                // '목표 달성형(CHECK)'은 한 번만 성공해도 즉시 챌린지 완료! (예: 3일 내 1kg 감량)
+                completeChallengeProcess(uc);
+            } else {
+                // '매일 수행형(LIMIT/MINIMUM)'은 카운트 증가 (Streak)
+                updateProgressProcess(uc);
+            }
+        } else {
+            // [실패 시]
+            if ("CHECK".equals(uc.getChallengeType())) {
+                // '목표 달성형'은 오늘 못 뺐다고 실패 아님. 기간 끝날 때까지 기다려줌.
+                // (아무것도 안 함 = 기회 유지)
+                long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(
+                        uc.getStartDate().toLocalDate(), // DB에 저장된 시작일
+                        java.time.LocalDate.now() // 오늘
+                );
+                if (daysBetween >= uc.getDurationDays()) {
+                    challengeMapper.failChallenge(uc.getUserChallengeId());
+                }
+            } else {
+                // '매일 수행형'은 하루만 놓쳐도 실패 (Streak 끊김)
+                challengeMapper.failChallenge(uc.getUserChallengeId());
+            }
+        }
+    }
+
+    // [보조] 진행도 업데이트 및 완료 처리
+    private void updateProgressProcess(MyChallengeItemDto uc) {
+        int newCount = uc.getCurrentCount() + 1;
+        int duration = uc.getDurationDays() > 0 ? uc.getDurationDays() : 1;
+
+        // 퍼센트 계산 (최대 100%)
+        int newPercent = (int) ((double) newCount / duration * 100);
+        if (newPercent > 100) newPercent = 100;
+
+        challengeMapper.updateProgress(uc.getUserChallengeId(), newCount, newPercent);
+
+        // 기간을 모두 채웠으면 최종 완료
+        if (newCount >= duration) {
+            completeChallengeProcess(uc);
+        }
+    }
+
+    // [보조] 최종 완료 및 보상 지급
+    private void completeChallengeProcess(MyChallengeItemDto uc) {
+        challengeMapper.completeChallenge(uc.getUserChallengeId());
+
+        // 포인트 지급
+        if (uc.getPoints() != null && uc.getPoints() > 0) {
+            challengeMapper.addUserPoint(uc.getUserId(), uc.getPoints());
+        }
+        // 뱃지 지급
+        challengeMapper.insertUserBadge(uc.getUserId(), uc.getChallengeId());
     }
 
     // MealDto의 Integer 값을 double로 안전하게 변환하여 리턴
@@ -303,6 +338,12 @@ public class ChallengeServiceImpl implements ChallengeService {
             case "sodium":   return dto.getSodium()   != null ? dto.getSodium()   : 0.0;
             case "fiber":    return dto.getFiber()    != null ? dto.getFiber()    : 0.0;
             case "calcium":  return dto.getCalcium()  != null ? dto.getCalcium()  : 0.0;
+            case "calories_breakfast": return dto.getCaloriesBreakfast();
+            case "protein_breakfast":  return dto.getProteinBreakfast();
+            case "calories_lunch":     return dto.getCaloriesLunch();
+            case "calories_dinner":    return dto.getCaloriesDinner();
+            case "calories_late_night":return dto.getCaloriesLateNight();
+            case "record_count":       return dto.getMealCount();
             default: return 0.0;
         }
     }

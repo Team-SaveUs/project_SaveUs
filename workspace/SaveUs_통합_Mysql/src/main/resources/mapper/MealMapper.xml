@@ -137,7 +137,18 @@
         IFNULL(SUM(SUGAR_G), 0)       AS sugar,
         IFNULL(SUM(FIBER_G), 0)       AS fiber,
         IFNULL(SUM(CALCIUM_MG), 0)    AS calcium,
-        IFNULL(SUM(SODIUM_MG), 0)     AS sodium
+        IFNULL(SUM(SODIUM_MG), 0)     AS sodium,
+        -- 아침 (05시 ~ 10:59)
+        IFNULL(SUM(CASE WHEN HOUR(EAT_TIME) BETWEEN 5 AND 10 THEN CALORIES_KCAL ELSE 0 END), 0) AS caloriesBreakfast,
+        IFNULL(SUM(CASE WHEN HOUR(EAT_TIME) BETWEEN 5 AND 10 THEN PROTEIN_G     ELSE 0 END), 0) AS proteinBreakfast,
+        -- 점심 (11시 ~ 16:59)
+        IFNULL(SUM(CASE WHEN HOUR(EAT_TIME) BETWEEN 11 AND 16 THEN CALORIES_KCAL ELSE 0 END), 0) AS caloriesLunch,
+        -- 저녁 (17시 ~ 20:59)
+        IFNULL(SUM(CASE WHEN HOUR(EAT_TIME) BETWEEN 17 AND 20 THEN CALORIES_KCAL ELSE 0 END), 0) AS caloriesDinner,
+        -- 야식 (21시 ~ 04시)
+        IFNULL(SUM(CASE WHEN HOUR(EAT_TIME) >= 21 OR HOUR(EAT_TIME) &lt; 5 THEN CALORIES_KCAL ELSE 0 END), 0) AS caloriesLateNight,
+        -- 기록 횟수
+        COUNT(ENTRY_ID) AS mealCount
         FROM MEAL_ENTRY
         WHERE USER_ID = #{userId}
         AND DATE(EAT_TIME) = DATE(DATE_SUB(NOW(), INTERVAL 1 DAY))

@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -27,19 +28,19 @@
 
         <section class="profile-edit-card">
 
-            <!-- 상단 배너 -->
+            &lt;!&ndash; 상단 배너 &ndash;&gt;
             <div class="edit-banner"></div>
 
             <div class="edit-profile-container">
 
-                <!-- 프로필 이미지 영역 -->
+                &lt;!&ndash; 프로필 이미지 영역 &ndash;&gt;
                 <div class="profile-img-wrapper">
                     <img class="edit-profile-img"
                          id="profilePreview"
                          th:src="${user.profileImageUrl != null ? user.profileImageUrl : '/images/user-default.png'}"
                          alt="Profile Image">
 
-                    <!-- 숨겨진 이미지 업로드 input -->
+                    &lt;!&ndash; 숨겨진 이미지 업로드 input &ndash;&gt;
                     <input type="file" id="profileImageInput"
                            name="profileImage"
                            accept="image/*"
@@ -51,24 +52,24 @@
                     </button>
                 </div>
 
-                <!-- 입력 항목들 -->
+                &lt;!&ndash; 입력 항목들 &ndash;&gt;
                 <div class="edit-profile-info">
 
-                    <!-- 닉네임 -->
+                    &lt;!&ndash; 닉네임 &ndash;&gt;
                     <div class="form-group">
                         <label>닉네임</label>
                         <input type="text" class="input-box"
                                th:field="*{nickname}" maxlength="12" readonly>
                     </div>
 
-                    <!-- 이메일 -->
+                    &lt;!&ndash; 이메일 &ndash;&gt;
                     <div class="form-group">
                         <label>이메일</label>
                         <input type="email" class="input-box"
                                th:value="${user.email}" readonly>
                     </div>
 
-                    <!-- 생년월일 + 나이 -->
+                    &lt;!&ndash; 생년월일 + 나이 &ndash;&gt;
                     <div class="form-row two-col">
 
                         <div class="form-group">
@@ -84,7 +85,7 @@
                         </div>
                     </div>
 
-                    <!-- 목표 -->
+                    &lt;!&ndash; 목표 &ndash;&gt;
                     <div class="form-group">
                         <label>목표</label>
                         <select class="input-box" th:field="*{mainGoal}">
@@ -94,7 +95,7 @@
                         </select>
                     </div>
 
-                    <!-- 키 + 체중 -->
+                    &lt;!&ndash; 키 + 체중 &ndash;&gt;
                     <div class="form-row two-col key-weight">
 
                         <div class="form-group">
@@ -113,10 +114,10 @@
                             </div>
                         </div>
                     </div>
-                </div> <!-- edit-profile-info end -->
-            </div> <!-- edit-profile-container end -->
+                </div> &lt;!&ndash; edit-profile-info end &ndash;&gt;
+            </div> &lt;!&ndash; edit-profile-container end &ndash;&gt;
 
-            <!-- 수정 완료 버튼 -->
+            &lt;!&ndash; 수정 완료 버튼 &ndash;&gt;
             <button type="submit" class="save-profile-btn">수정 완료</button>
         </section>
     </form>
@@ -152,5 +153,130 @@
         </form>
     </section>
 
+</main>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>설정</title>
+    <link rel="stylesheet" th:href="@{/css/myPageEdit.css}">
+</head>
+
+<main layout:fragment="content">
+    <script th:inline="javascript">
+        window.pwError = /*[[${pwError}]]*/ null;
+        window.pwSuccess = /*[[${pwSuccess}]]*/ null;
+    </script>
+    <script th:src="@{/js/profileEdit.js}"></script>
+
+    <div class="edit-container">
+        <h2 class="edit-title">설정</h2>
+        <p class="edit-sub">내 정보와 계정 보안을 관리합니다.</p>
+
+        <div class="profile-edit-card">
+
+            <div class="edit-banner"></div>
+
+            <div class="settings-grid">
+
+                <div class="settings-left">
+                    <h3 class="section-title">프로필 정보</h3>
+
+                    <form th:action="@{/profile/edit}" th:object="${user}"
+                          method="post" enctype="multipart/form-data" class="profile-form">
+
+                        <div class="profile-img-wrapper">
+                            <img class="edit-profile-img" id="profilePreview"
+                                 th:src="${user.profileImageUrl != null ? user.profileImageUrl : '/images/user-default.png'}"
+                                 alt="Profile Image">
+
+                            <input type="file" id="profileImageInput" name="profileImage" accept="image/*" style="display:none;">
+                            <button type="button" class="change-img-btn"
+                                    onclick="document.getElementById('profileImageInput').click()">
+                                사진 변경
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label>닉네임</label>
+                            <input type="text" class="input-box" th:field="*{nickname}" maxlength="12">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" style="flex: 2;">
+                                <label>생년월일</label>
+                                <input type="date" class="input-box" th:field="*{birthdate}" readonly>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>나이</label>
+                                <input type="number" class="input-box" th:value="${user.age}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>키 (cm)</label>
+                                <input type="number" class="input-box" th:field="*{height}" min="1" max="250">
+                            </div>
+                            <div class="form-group">
+                                <label>체중 (kg)</label>
+                                <input type="number" class="input-box" th:field="*{currentWeight}" min="1" max="300">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>목표</label>
+                            <select class="input-box" th:field="*{mainGoal}">
+                                <option value="0">🏃 다이어트 (감량)</option>
+                                <option value="1">💪 벌크업 (증량)</option>
+                                <option value="2">🥗 건강 유지</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="save-profile-btn">변경사항 저장</button>
+                    </form>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <div class="settings-right">
+                    <h3 class="section-title">계정 및 보안</h3>
+
+                    <div class="form-group">
+                        <label>이메일 계정</label>
+                        <input type="email" class="input-box readonly-email" th:value="${user.email}" readonly>
+                    </div>
+
+                    <hr class="dashed-divider">
+
+                    <form th:action="@{/profile/password}" method="post" class="pw-form">
+                        <h4 class="sub-title">비밀번호 변경</h4>
+
+                        <div class="form-group">
+                            <label>현재 비밀번호</label>
+                            <input type="password" name="currentPassword" class="input-box" placeholder="현재 비밀번호" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>새 비밀번호</label>
+                            <input type="password" name="newPassword" class="input-box" placeholder="새 비밀번호" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>새 비밀번호 확인</label>
+                            <input type="password" name="confirmPassword" class="input-box" placeholder="비밀번호 확인" required>
+                        </div>
+                        <p id="pwCheckMsg" class="pw-msg"></p>
+
+                        <button type="submit" class="pw-update-btn" id="pwSubmitBtn" disabled>비밀번호 변경</button>
+                    </form>
+                </div>
+
+            </div> </div> </div>
 </main>
 </html>

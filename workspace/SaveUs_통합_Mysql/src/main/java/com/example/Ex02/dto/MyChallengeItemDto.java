@@ -14,6 +14,7 @@ public class MyChallengeItemDto {
     private String status;          // ONGOING, COMPLETED
     private Double startValue;      // 시작 체중 등 (체중 감량 챌린지용)
     private Integer currentCount;   // 현재 성공 횟수 (스케줄러용)
+    private java.sql.Date startDate;
 
     private String challengeType;   // LIMIT, MINIMUM, CHECK
     private String metricKey;       // sodium, carbs...

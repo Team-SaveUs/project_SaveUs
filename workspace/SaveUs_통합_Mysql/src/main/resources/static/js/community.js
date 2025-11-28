@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const CURRENT_USER_ID = postListContainer ? parseInt(postListContainer.dataset.currentUserId, 10) : 0;
 
     // ----------------------------------------------------
-    // 1. 사진 업로드 미리보기 (새 글 작성)
+    // 사진 업로드 미리보기 (새 글 작성)
     // ----------------------------------------------------
     const newPostForm = document.querySelector('.new-post-form');
     const imageInput = document.getElementById('new-post-images');
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ----------------------------------------------------
-    // [핵심] 탭 및 페르소나 필터 상태 관리 로직
+    // 탭 및 페르소나 필터 상태 관리 로직
     // ----------------------------------------------------
     const feedFilters = document.querySelector('.feed-filters');
     const personaFilters = document.querySelector('.persona-filters');
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadPosts() {
         if (!postListContainer) return;
 
-        // 1. 상태 변수를 기반으로 API URL 조합
+        // 상태 변수를 기반으로 API URL 조합
         let baseUrl = (currentSort === 'popular') ? '/api/posts/popular' : '/api/posts';
         let params = new URLSearchParams();
 
@@ -248,20 +248,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const queryString = params.toString();
         const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
-        // 2. 로딩 표시
+        // 로딩 표시
         postListContainer.innerHTML = '<p>Loading posts...</p>';
 
         try {
-            // 3. API 호출
+            // API 호출
             const response = await fetch(url);
             if (!response.ok) throw new Error('Failed to fetch posts');
 
             const posts = await response.json();
 
-            // 4. 렌더링 (기존 함수 재사용)
+            // 렌더링 (기존 함수 재사용)
             renderPostList(posts, postListContainer);
 
-            // 5. UI 상태 동기화
+            // UI 상태 동기화
             updateActiveButtons();
 
         } catch (error) {
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 탭(Latest/Popular) 활성화
         if (feedFilters) {
             feedFilters.querySelectorAll('.filter-tab').forEach(tab => {
-                // [핵심 수정] textContent -> dataset.sort
+                // textContent -> dataset.sort
                 if (tab.dataset.sort === currentSort) {
                     tab.classList.add('active');
                 } else {
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 1. 'Latest' / 'Popular' 탭 이벤트 리스너
+    // 'Latest' / 'Popular' 탭 이벤트 리스너
     if (feedFilters && postListContainer) {
         feedFilters.addEventListener('click', (e) => {
             if (!e.target.classList.contains('filter-tab')) return;
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. '페르소나 필터' 이벤트 리스너
+    // '페르소나 필터' 이벤트 리스너
     if (personaFilters && postListContainer) {
         personaFilters.addEventListener('click', (e) => {
             if (!e.target.classList.contains('persona-tag')) return;
@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="post-comments-summary">
                     <div class="comment-input-area">
                         <input type="text" placeholder="댓글 달기..." data-post-id="${post.postId}" class="comment-input-field">
-                        <button class="comment-submit-btn" data-post-id="${post.postId}">게시</button>
+                        <button class="comment-submit-btn" data-post-id="${post.postId}"><i class="fi fi-rr-paper-plane"></i></button>
                     </div>
                 </div>
             </article>
@@ -629,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="modal-comment-input">
                         <input type="text" placeholder="댓글 달기..." data-post-id="${post.postId}" id="modal-comment-input-field">
-                        <button class="post-comment-btn" id="modal-comment-submit-btn" data-post-id="${post.postId}">게시</button>
+                        <button class="comment-submit-btn" data-post-id="${post.postId}"><i class="fi fi-rr-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modal.dataset.postId = postId;
         modalBody.innerHTML = '<h2>Loading...</h2>';
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         try {
             const commentsResponse = await fetch(`/api/posts/${postId}/comments`);
             if (!commentsResponse.ok) {
@@ -994,7 +994,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const response = await postComment(postId, content);
                     if (response.success) {
                         modalInput.value = '';
-                        // [핵심 오타 수정] .modal-css-list -> .modal-comments-list
                         const commentList = modal.querySelector('.modal-comments-list');
                         if (commentList) {
                             const newCommentHtml = renderCommentHtml(response.newComment, CURRENT_USER_ID);
@@ -1051,9 +1050,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button type="button" class="carousel-control next" id="edit-preview-next-btn">&gt;</button>
                 <div class="carousel-indicator" id="edit-preview-indicator"></div>
             </div>
+            <div class="edit-actions-container">
             <div class="custom-file-upload" style="margin-top: 15px;">
                 <label for="edit-post-images" class="custom-file-button">
-                    <span>📷</span>
+                    <span>+</span>
                 </label>
                 <input type="file" name="images" multiple="multiple" accept="image/*"
                        class="post-edit-images" id="edit-post-images" style="display: none;">
@@ -1061,6 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="edit-actions">
                 <button class="edit-cancel-btn">취소</button>
                 <button class="edit-save-btn">저장</button>
+            </div>
             </div>
         `;
 
