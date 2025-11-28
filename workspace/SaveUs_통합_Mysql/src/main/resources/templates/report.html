@@ -113,15 +113,21 @@
                 <div class="content-center">
                     <div class="exercise-block">
                         <h4 class="exercise-title">준비운동</h4>
-                        <p id="exercisePrep">-</p>
+                        <p id="exercisePrep" th:text="${data.routine.준비운동}">-</p>
                     </div>
+
                     <div class="exercise-block">
                         <h4 class="exercise-title">본운동</h4>
-                        <ul id="exerciseMain"></ul>
+                        <ul id="exerciseMain">
+                            <li th:each="item : ${data.routine.본운동}"
+                                th:text="${item}">
+                            </li>
+                        </ul>
                     </div>
+
                     <div class="exercise-block">
                         <h4 class="exercise-title">정리운동</h4>
-                        <p id="exerciseCool">-</p>
+                        <p id="exerciseCool" th:text="${data.routine.정리운동}">-</p>
                     </div>
                 </div>
                 <p class="chart-caption">* AI 분석 기반 맞춤형 운동 루틴입니다.</p>
