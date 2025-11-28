@@ -20,7 +20,7 @@ public class AiFoodService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     // 파이썬 서버 주소 확인 필요 (localhost:8000 인지 등)
-    private final String FASTAPI_URL = "http://127.0.0.1:8000/api_test";
+    private final String FASTAPI_URL = "http://127.0.0.1:8000/food/detect";
 
 
     public List<MealSaveDto> analyzeImage(MultipartFile file) {
