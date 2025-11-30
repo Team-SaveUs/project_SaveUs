@@ -5,7 +5,7 @@ import httpx
 
 
 class APIClient:
-    timeout: float = 10.0
+    timeout: float = 5.
 
     def __init__(
             self,
