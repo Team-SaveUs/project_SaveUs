@@ -99,6 +99,9 @@ public class ChallengesController {
     public String testScheduler() {
         System.out.println(">>> [TEST] 강제 스케줄러 실행 요청");
         challengeService.runDailyCheck();
-        return "스케줄러 로직 실행 완료.";
+        return "<script>" +
+                "alert('오늘자 챌린지 검증 완료');" +
+                "location.href = '/challenges';" +
+                "</script>";
     }
 }
