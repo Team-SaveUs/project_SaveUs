@@ -52,7 +52,7 @@ public class ReportController {
         List<DailyIntakeDto> intakeList = dailyIntakeMapper.findDailyIntake(userId);
 
         if (intakeList != null && !intakeList.isEmpty()) {
-            DailyIntakeDto dailyIntake = intakeList.get(0);
+            DailyIntakeDto dailyIntake = intakeList.get(intakeList.size()-1);
             UserGoalDto userGoal = userGoalMapper.findUserGoal(userId);
 
             long score = healthScoreService.calculateDailyScore(dailyIntake, userGoal);
