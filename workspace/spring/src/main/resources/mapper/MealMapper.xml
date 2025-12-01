@@ -151,7 +151,7 @@
         COUNT(ENTRY_ID) AS mealCount
         FROM MEAL_ENTRY
         WHERE USER_ID = #{userId}
-        AND DATE(EAT_TIME) = DATE(DATE_SUB(NOW(), INTERVAL 1 DAY))
+        AND DATE(EAT_TIME) = CURDATE()
     </select>
 
     <select id="getDailyNutritionStats" resultMap="MealResultMap">
