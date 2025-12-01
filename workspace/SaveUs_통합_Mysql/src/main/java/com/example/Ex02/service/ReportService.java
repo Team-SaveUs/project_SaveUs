@@ -39,6 +39,8 @@ public class ReportService {
 
         // 건강 점수 추이 (최근 12일)
         List<CalendarScoreDto> scores = healthScoreMapper.selectRecentScores(userId);
+        System.out.println("scores_service:"+scores.get(0));
+
         List<String> sDates = new ArrayList<>();
         List<Integer> sValues = new ArrayList<>();
         List<Double> bmiValues = new ArrayList<>();

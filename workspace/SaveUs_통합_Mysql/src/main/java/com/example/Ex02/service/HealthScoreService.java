@@ -57,11 +57,17 @@ public class HealthScoreService {
 
         int score = 0;
 
+        System.out.println("getCalories"+d.getCalories());
+        System.out.println("getCaloriesKcal"+g.getCaloriesKcal());
         score += macroScorePenalty(d.getCalories(), g.getCaloriesKcal(), 25);
+        System.out.println("score:::"+score);
         score += macroScorePenalty(d.getCarbs(), g.getCarbsG(), 25);
+        System.out.println("score:::"+score);
         score += macroScorePenalty(d.getProtein(), g.getProteinG(), 25);
+        System.out.println("score:::"+score);
         score += macroScorePenalty(d.getFats(), g.getFatsG(), 25);
-
+        System.out.println("score:::"+score);
+        System.out.println("Math.min(score, 100);"+Math.min(score, 100));
         return Math.min(score, 100);
     }
 

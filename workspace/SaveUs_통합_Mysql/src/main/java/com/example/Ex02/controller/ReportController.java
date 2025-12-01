@@ -52,10 +52,20 @@ public class ReportController {
         List<DailyIntakeDto> intakeList = dailyIntakeMapper.findDailyIntake(userId);
 
         if (intakeList != null && !intakeList.isEmpty()) {
-            DailyIntakeDto dailyIntake = intakeList.get(0);
+            DailyIntakeDto dailyIntake = intakeList.get(intakeList.size()-1);
             UserGoalDto userGoal = userGoalMapper.findUserGoal(userId);
+            System.out.println(dailyIntake.getCalories());
+            System.out.println(dailyIntake.getCarbs());
+            System.out.println(dailyIntake.getFats());
+            System.out.println(dailyIntake.getProtein());
+
+            System.out.println(userGoal.getCaloriesKcal());
+            System.out.println(userGoal.getCarbsG());
+            System.out.println(userGoal.getFatsG());
+            System.out.println(userGoal.getProteinG());
 
             long score = healthScoreService.calculateDailyScore(dailyIntake, userGoal);
+            System.out.println("score"+score);
             healthScoreMapper.updateScoreByUserId(
                     userId,
                     new java.sql.Date(System.currentTimeMillis()),
