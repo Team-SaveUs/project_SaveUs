@@ -339,6 +339,9 @@ public class UserController {
         UserJoinDto profile = userMapper.findMainInfo(targetUserId);
         if (profile == null) return "error/404";
 
+        String dietType = surveyMapper.findDietType(targetUserId);
+        model.addAttribute("dietType", dietType);
+
         List<UserBadgeDto> badges = userBadgeMapper.findBadgesByUser(targetUserId);
         model.addAttribute("badges", badges);
 

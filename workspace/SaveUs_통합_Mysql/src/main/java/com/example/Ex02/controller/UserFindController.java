@@ -135,7 +135,7 @@ public class UserFindController {
     }
 
     // 비밀번호 재설정 페이지
-    @GetMapping("/user/reset-pw/proc")
+    @GetMapping("/user/reset-pw")
     public String resetPwPage(
             @RequestParam(value = "token", required = false) String token,
             HttpSession session,
@@ -162,7 +162,7 @@ public class UserFindController {
     }
 
     // 비밀번호 재설정 처리
-    @PostMapping("/user/reset-pw")
+    @PostMapping("/user/reset-pw/proc")
     public String resetPw(
             @RequestParam("newPassword") String newPassword,
             @RequestParam("confirmPassword") String confirmPassword,
