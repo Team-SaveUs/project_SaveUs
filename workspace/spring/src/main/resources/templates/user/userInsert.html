@@ -13,6 +13,7 @@
     <h1>회원가입</h1>
 
     <form th:action="@{/user/insert}" th:object="${userDto}" method="post" onsubmit="return validateForm()">
+
         <!-- 이메일 -->
         <div class="form-row">
             <label>이메일</label>
