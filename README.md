@@ -53,10 +53,10 @@ SaveUs는 **AI 음식 이미지 분석 및 식단 데이터를 기반으로 사�
 ```mermaid
 graph LR
     User[사용자] -->|Web/Mobile| Spring[Spring Boot Server]
-    Spring -->|Data| DB[(MySQL/Oracle)]
-    Spring -->|API| AI_Food[AI: 음식 인식 (YOLO)]
-    Spring -->|API| AI_Risk[AI: 위험도 분석 (RF/XGB)]
-    Spring -->|API| AI_Exercise[AI: 운동 추천]
+    Spring -->|Data| DB[("MySQL/Oracle")]
+    Spring -->|API| AI_Food["AI: 음식 인식 (YOLO)"]
+    Spring -->|API| AI_Risk["AI: 위험도 분석 (RF/XGB)"]
+    Spring -->|API| AI_Exercise["AI: 운동 추천"]
 ```
 
 ### 6.2 데이터 흐름 (Data Flow)
