@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const parts = full.split('@');
         document.getElementById('emailId').value = parts[0];
         document.getElementById('emailDomain').value = parts[1];
+
     }
 
     /* 생년월일 */
@@ -335,3 +336,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("heightInput").addEventListener("input", calculateBMI);
     document.getElementById("weightInput").addEventListener("input", calculateBMI);
 });
+
+document.getElementById("isEmailVerified").value = "true";
+isVerified = true;

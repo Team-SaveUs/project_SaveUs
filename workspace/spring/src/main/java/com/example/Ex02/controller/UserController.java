@@ -94,12 +94,16 @@ public class UserController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("userDto", userJoinDto);
             return "user/userInsert";
         }
 
+        // 이메일 인증 확인
         String verifiedEmail = (String) session.getAttribute("verifiedEmail");
         if (verifiedEmail == null || !verifiedEmail.equals(userJoinDto.getEmail())) {
             model.addAttribute("globalError", "이메일 인증이 필요합니다.");
+            model.addAttribute("userDto", userJoinDto);
+            model.addAttribute("isEmailVerified", false);
             return "user/userInsert";
         }
 
